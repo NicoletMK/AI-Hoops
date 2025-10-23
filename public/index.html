@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Hoops Academy</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Orbitron:wght@700&display=swap');
+        :root {
+            --bg-color: #090A0F; --card-bg: rgba(27, 39, 53, 0.6); --primary-text: #F9FAFB;
+            --secondary-text: #9CA3AF; --human-color: #FF71CD; --ai-color: #00C2FF;
+            --accent-color: #00FFD1; --accent-glow: rgba(0, 255, 209, 0.4); --shadow-color: rgba(0,0,0,0.4);
+            --border-color: rgba(55, 65, 81, 0.5); --accent-gradient: linear-gradient(45deg, var(--accent-color), #00c2ff);
+            --bright-text: #CFD8DC;
+            --success-color: #22c55e; /* Green for checkmark */
+        }
+        *, *::before, *after { box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--primary-text);
+            margin: 0; padding: 2rem; display: flex; justify-content: center; align-items: flex-start;
+            min-height: 100vh; overflow-y: auto;
+            background-image: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            background-attachment: fixed;
+        }
+        .icon-svg { width: 1.5em; height: 1.5em; vertical-align: middle; margin-right: 0.5rem; }
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(9, 10, 15, 0.5);
+            backdrop-filter: blur(12px); display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; visibility: hidden; padding: 1rem;
+        }
+        .modal-content {
+            background: var(--card-bg); border-radius: 32px; padding: 2rem; text-align: center;
+            max-width: 900px; width: 100%; border: 1px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 20px var(--accent-glow); transform: scale(0.9); opacity: 0;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header-graphic { color: var(--accent-color); margin-bottom: 1rem; }
+        .modal-header-graphic svg { width: 100px; height: 100px; filter: drop-shadow(0 0 15px var(--accent-glow)); }
+        .modal-content h1 { font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 700; margin-bottom: 0rem; letter-spacing: -1px; text-shadow: 0 0 15px rgba(0,0,0,0.3); }
+        .modal-content h1 span { color: var(--accent-color); text-shadow: 0 0 10px var(--accent-glow); }
+        .modal-content > p {
+            font-size: 1.15rem;
+            color: var(--primary-text);
+            margin: 0 auto 1.5rem; max-width: 600px;
+        }
+        .welcome-section { margin: 1.5rem 0; padding: 1.25rem; background: rgba(9, 10, 15, 0.4); border-radius: 20px; text-align: left; border: 1px solid var(--border-color); }
+        .welcome-section h2 { margin-top: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; text-align: center; color: var(--accent-color); text-shadow: 0 0 8px var(--accent-glow); }
+        .welcome-section ol { padding-left: 25px; font-size: 1rem; }
+        .welcome-section ol li {
+            margin-bottom: 0.75rem;
+            color: var(--bright-text);
+        }
+        .welcome-section ol li::marker { color: var(--accent-color); font-weight: 600; }
+        .info-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+        .info-form-grid label { font-weight: 600; font-size: 0.9rem; color: var(--secondary-text); }
+        .info-form-grid input { width: 100%; background: var(--bg-color); border: 1px solid var(--border-color); color: var(--primary-text); padding: 0.65rem; border-radius: 12px; font-family: 'Poppins', sans-serif; font-size: 1rem; transition: all 0.2s ease; }
+        .info-form-grid input:focus { border-color: var(--accent-color); box-shadow: 0 0 10px var(--accent-glow); outline: none; }
+        .info-section { text-align: left; margin: 1.5rem 0; padding: 1.5rem; background: rgba(9, 10, 15, 0.4); border-radius: 20px; border: 1px solid var(--border-color); }
+        .info-section h3 { margin: 0 0 0.5rem; font-size: 1.2rem; font-weight: 600; letter-spacing: 0; }
+        .info-section ol {
+            padding-left: 18px; margin: 0; font-size: 0.95rem;
+            color: var(--bright-text);
+        }
+        .info-section ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .info-section li {
+            background: rgba(9, 10, 15, 0.4);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+        .finale-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            text-align: center;
+            padding: 0;
+            margin-top: 1rem;
+        }
+        .summary-item {
+            background: rgba(9, 10, 15, 0.4);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .summary-item h4 {
+            margin: 0 0 0.5rem;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+        }
+        .summary-item p {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-text);
+        }
+        #human-info-recap h3 { color: var(--human-color); }
+        #ai-info-recap h3 { color: var(--ai-color); }
+        .modal-actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+        #level-selection-container { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+        .level-select-btn {
+            background: var(--bg-color); border: 2px solid var(--border-color); border-radius: 20px; padding: 1.5rem;
+            width: 220px; text-align: center; cursor: pointer; transition: all 0.2s ease;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .level-select-btn:hover { transform: translateY(-10px) scale(1.05); border-color: var(--accent-color); box-shadow: 0 10px 25px 0 var(--accent-glow); }
+        .level-select-btn.locked { opacity: 0.5; cursor: not-allowed; border-color: var(--border-color); background: rgba(27, 39, 53, 0.3); }
+        .level-select-btn.locked:hover { transform: none; box-shadow: none; }
+        .level-select-btn p {
+            color: var(--bright-text);
+        }
+        .level-status { font-size: 0.9rem; color: var(--secondary-text); margin-top: 1rem; display: flex; align-items: center; justify-content: center; height: 20px;}
+        .level-status svg { width: 1em; height: 1em; margin-right: 0.5em; }
+        .level-status .icon-lock { color: var(--secondary-text); } /* Specific color for lock */
+        .level-status .icon-check { color: var(--success-color); } /* Specific color for check */
+        .level-select-btn h3 { font-size: 1.3rem; font-weight: 600; margin: 0.5rem 0; color: var(--primary-text); }
+        #winner-text { font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 700; text-shadow: 0 0 15px rgba(255,255,255,0.5); }
+        .game-container { visibility: hidden; width: 100%; max-width: 1200px; opacity: 0; }
+        header { text-align: center; margin-bottom: 2rem; }
+        header h1 { font-family: 'Orbitron', sans-serif; font-size: 3.5rem; font-weight: 700; margin: 0; letter-spacing: -1.5px; }
+        header h1 span { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px var(--accent-glow)); }
+        header p { font-size: 1.1rem; color: var(--secondary-text); }
+        #scoreboard { background: var(--card-bg); border-radius: 20px; padding: 1rem 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border-color); box-shadow: 0 4px 20px var(--shadow-color); backdrop-filter: blur(10px); }
+        #scoreboard-header { display: flex; justify-content: space-around; font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: var(--secondary-text); margin-bottom: 0.5rem; }
+        #human-score-label { color: var(--human-color); } #ai-score-label { color: var(--ai-color); }
+        #scores { display: flex; justify-content: space-around; align-items: center; font-family: 'Orbitron', sans-serif; font-size: 4rem; font-weight: 700; }
+        .score-value { display: inline-block; }
+        #human-score-display .score-value { color: var(--human-color); text-shadow: 0 0 15px var(--human-color); } 
+        #ai-score-display .score-value { color: var(--ai-color); text-shadow: 0 0 15px var(--ai-color); }
+        #game-status-text { font-size: 1.1rem; font-weight: 600; min-height: 24px; margin-top: 1.5rem; text-shadow: 0 0 5px var(--accent-glow); color: var(--accent-color); text-align: center; }
+        .player-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .player-card { 
+            position: relative; background: var(--card-bg); border-radius: 24px; padding: 1.5rem; text-align: center; 
+            border: 1px solid var(--border-color); box-shadow: 0 8px 30px var(--shadow-color); 
+            transition: all 0.4s ease; display: flex; flex-direction: column; backdrop-filter: blur(10px);
+        }
+        .player-card.inactive-turn { opacity: 0.6; transform: scale(0.97); }
+        .player-card.active-turn { opacity: 1; transform: scale(1); filter: grayscale(0); }
+        #human-card.active-turn { border-color: var(--human-color); box-shadow: 0 0 25px 0 rgba(255, 113, 205, 0.4); }
+        #ai-card.active-turn { border-color: var(--ai-color); box-shadow: 0 0 25px 0 rgba(0, 194, 255, 0.4); }
+        .card-header h3 { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; font-weight: 700; margin: 0 0 1rem; }
+        .human-title { color: var(--human-color); text-shadow: 0 0 10px var(--human-color); }
+        .ai-title { color: var(--ai-color); text-shadow: 0 0 10px var(--ai-color); }
+        .canvas-container { margin: 1rem 0; position: relative; background-color: #1B2735; border-radius: 16px; border: 1px solid var(--border-color); flex-grow: 1; overflow: hidden; }
+        .shot-feedback { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: 'Orbitron', sans-serif; font-size: 3.5rem; font-weight: 700; opacity: 0; text-shadow: 0 0 20px rgba(0,0,0,0.9); }
+        .ai-training-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(9, 10, 15, 0.9); border-radius: 16px; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 10; font-size: 1.2rem; }
+        .training-progress-bar { width: 80%; height: 12px; background: var(--border-color); border-radius: 6px; overflow: hidden; margin-top: 1rem; }
+        .training-progress-fill { width: 0%; height: 100%; background: var(--accent-gradient); border-radius: 6px; transition: width 0.2s linear; }
+        .controls label { font-weight: 600; display: block; margin: 1rem 0 0.5rem; font-size: 1.1rem; }
+        input[type="range"] { -webkit-appearance: none; appearance: none; width: 85%; cursor: pointer; background: transparent; }
+        input[type="range"]::-webkit-slider-runnable-track { height: 10px; background: rgba(9, 10, 15, 0.8); border-radius: 5px; border: 1px solid var(--border-color); }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; margin-top: -7px; width: 24px; height: 24px; background: var(--primary-text); border-radius: 50%; border: 3px solid var(--bg-color); transition: transform 0.2s ease; }
+        input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.1); }
+        #human-angle-slider::-webkit-slider-thumb { box-shadow: 0 0 10px var(--human-color); }
+        #human-power-slider::-webkit-slider-thumb { box-shadow: 0 0 10px var(--human-color); }
+        .button-primary { background: var(--accent-gradient); color: var(--bg-color); padding: 1rem 2.5rem; border-radius: 16px; border: none; font-size: 1.2rem; font-family: 'Orbitron', sans-serif; cursor: pointer; transition: all 0.2s ease; margin-top: 1.5rem; box-shadow: 0 4px 15px rgba(0, 255, 209, 0.1); }
+        .button-primary:hover:not(:disabled) { transform: translateY(-4px); box-shadow: 0 8px 25px var(--accent-glow); }
+        .button-primary:disabled { background: var(--border-color); cursor: not-allowed; opacity: 0.5; }
+        .ai-controls { margin-top: 1rem; }
+        .ai-controls button.small { font-family: 'Poppins', sans-serif; font-weight: 600; padding: 0.6rem 1.2rem; font-size: 0.9rem; margin: 0.25rem; background: var(--ai-color); box-shadow: 0 4px 15px rgba(0, 194, 255, 0.2); border-radius: 12px; }
+        .ai-controls button.small:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 194, 255, 0.4); }
+        #ai-shoot-btn { background: var(--ai-color); box-shadow: 0 4px 15px rgba(0, 194, 255, 0.2); }
+        #ai-shoot-btn:hover:not(:disabled) { box-shadow: 0 8px 25px rgba(0, 194, 255, 0.4); }
+        #ai-brain-container { background-color: rgba(9, 10, 15, 0.8); border-radius: 12px; padding: 1rem; margin-top: 1rem; border: 1px solid var(--border-color); }
+        #ai-brain-container h4 { margin: 0 0 0.5rem; font-family: 'Orbitron', sans-serif; color: var(--accent-color); text-shadow: 0 0 8px var(--accent-glow); }
+        #q-table-desc { font-size: 0.9rem; color: var(--secondary-text); margin: 0 0 1rem; }
+        #q-table-visual { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; max-width: 200px; margin: 0 auto; }
+        .q-cell { width: 16px; height: 16px; background-color: var(--border-color); border-radius: 4px; transition: background-color 0.3s ease; }
+        
+        /* --- This is the real-time feedback box, now hidden --- */
+        .feedback-text { 
+            display: none !important; /* This hides the element */
+        }
+        
+        #ai-coach-tip { background-color: rgba(0, 194, 255, 0.1); border: 1px solid var(--ai-color); border-radius: 12px; padding: 1rem; margin-top: 1rem; font-size: 0.95rem; color: var(--primary-text); min-height: 40px; }
+        #ai-coach-tip strong { color: var(--ai-color); }
+        
+        /* --- This is the Coach's Tip box, now visible --- */
+        #human-coach-tip {
+            background-color: rgba(255, 113, 205, 0.1);
+            border: 1px solid var(--human-color);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            color: var(--primary-text);
+            min-height: 40px;
+        }
+        #human-coach-tip strong { color: var(--human-color); }
+        
+        #score-history-board {
+            position: fixed; top: 2rem; right: 2rem; 
+            width: 240px;
+            background: var(--card-bg);
+            border-radius: 16px; border: 1px solid var(--border-color); padding: 1rem 1.5rem; z-index: 500;
+            backdrop-filter: blur(10px); box-shadow: 0 4px 20px var(--shadow-color); opacity: 0;
+            visibility: hidden; transform: translateX(30px); transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        #score-history-board.visible { opacity: 1; visibility: visible; transform: translateX(0); }
+        #score-history-board h4 {
+            font-family: 'Orbitron', sans-serif; text-align: center; color: var(--accent-color);
+            text-shadow: 0 0 8px var(--accent-glow); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;
+            margin: 0.25rem 0 1rem;
+            padding-right: 1.5rem;
+        }
+        #persistent-history-list {
+            list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; font-size: 0.9rem; color: var(--secondary-text);
+        }
+        #persistent-history-list li { padding: 0.5rem 0; border-bottom: 1px solid var(--border-color); }
+        #persistent-history-list li:last-child { border-bottom: none; }
+
+        .close-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.75rem;
+            background: none;
+            border: none;
+            color: var(--secondary-text);
+            font-size: 2rem;
+            font-weight: 300;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.2s ease;
+        }
+        .close-btn:hover {
+            color: var(--primary-text);
+        }
+
+        @media (max-width: 992px) {
+            body { padding: 1rem; } .player-grid { grid-template-columns: 1fr; }
+            header h1 { font-size: 2.5rem; } #scores { font-size: 3rem; }
+            #score-history-board { display: none; }
+            #open-history-btn { display: none !important; }
+        }
+        @media (max-width: 768px) {
+            .modal-content { padding: 1.5rem; } .modal-content h1 { font-size: 2.2rem; }
+            .level-select-btn { width: 100%; } #winner-text { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+    <button id="open-history-btn" class="button-primary" style="display: none; position: fixed; top: 2rem; right: 2rem; z-index: 499; padding: 0.75rem 1rem; font-size: 0.9rem; border-radius: 12px; font-family: 'Poppins', sans-serif;">
+        Show History
+    </button>
+
+    <svg width="0" height="0" style="display:none;">
+        <symbol id="icon-basketball-bot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/>
+            <path d="M12 21a9 9 0 0 0-9-9"/><path d="M21 12a9 9 0 0 1-9 9"/><path d="m5.64 5.64.01-.01"/>
+            <path d="m18.36 5.64.01-.01"/><path d="m12 3-.01.01"/><path d="m12 21-.01.01"/>
+            <path d="m3 12-.01-.01"/><path d="m21 12-.01-.01"/><path d="M17.5 9.5a9 9 0 1 0-11 0"/>
+            <path d="M14 22v-2a2 2 0 0 0-2-2h0a2 2 0 0 0-2 2v2"/>
+        </symbol>
+        <symbol id="icon-lock" class="icon-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </symbol>
+        <!-- --- MODIFICATION 3: Added Checkmark Icon --- -->
+        <symbol id="icon-check" class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </symbol>
+    </svg>
+
+    <div id="score-history-board">
+        <button id="close-history-btn" class="close-btn">&times;</button>
+        <h4>Game History</h4>
+        <ul id="persistent-history-list">
+            <li>No games completed.</li>
+        </ul>
+    </div>
+
+    <div id="welcome-overlay" class="modal-overlay">
+        <div id="welcome-modal" class="modal-content">
+             <div class="modal-header-graphic"><svg><use href="#icon-basketball-bot"/></svg></div>
+              <h1>Welcome to <span>AI Hoops!</span></h1>
+              <p>Your awesome mission: Coach a robot to become a basketball superstar! 🤖🏀</p>
+              
+              <div id="player-info-form" class="welcome-section">
+                   <h2>First, Tell Us About You!</h2>
+                   <div class="info-form-grid">
+                         <div><label for="first-name">First Name</label><input type="text" id="first-name"></div>
+                         <div><label for="last-initial">Last Name Initial</label><input type="text" id="last-initial" maxlength="1"></div>
+                         <div><label for="age">Age</label><input type="number" id="age"></div>
+                         <div><label for="grade">Grade</label><input type="number" id="grade"></div>
+                   </div>
+                   <div style="text-align: center;">
+                         <button id="continue-to-game-btn" class="button-primary">Let's Go!</button>
+                   </div>
+              </div>
+              
+              <!-- --- MODIFICATION 2: Updated level selection text --- -->
+              <div id="level-selection-section" class="welcome-section" style="display: none;">
+                   <h2>Select a Level to Start!</h2>
+                   <div id="level-selection-container">
+                         <div class="level-select-btn" data-level="1"><h3>Level 1: The Practice Court</h3><p>Learn the basics and take your first shots from a fixed position.</p><div class="level-status"></div></div>
+                         <div class="level-select-btn" data-level="2"><h3>Level 2: Moving Scrimmage</h3><p>The ball moves to new spots. Can you score from all over the court?</p><div class="level-status"></div></div>
+                         <div class="level-select-btn" data-level="3"><h3>Level 3: The Blocker Boss</h3><p>A moving blocker is in your way! Time your shots perfectly to win.</p><div class="level-status"></div></div>
+                   </div>
+              </div>
+        </div>
+    </div>
+
+    <div id="game-modal-overlay" class="modal-overlay">
+        <div id="game-modal" class="modal-content"></div>
+    </div>
+
+    <div class="game-container">
+        <header>
+            <h1 id="game-title">AI HOOPS: <span>LEVEL 1</span></h1>
+            <p id="game-subtitle">The bot learns the perfect shot from a fixed position.</p>
+        </header>
+        <div id="scoreboard">
+            <div id="scoreboard-header">
+                <div id="human-score-label">YOU</div>
+                <div id="ai-score-label">BOT</div>
+            </div>
+            <div id="scores">
+                <div id="human-score-display"><span class="score-value">0</span></div>
+                <div id="ai-score-display"><span class="score-value">0</span></div>
+            </div>
+            <p id="game-status-text">Your turn! Take your shot.</p>
+        </div>
+        <div class="player-grid">
+            <div id="human-card" class="player-card">
+                <div class="card-header">
+                    <h3 class="human-title">You!</h3>
+                </div>
+                <div class="canvas-container"><canvas id="human-canvas" width="400" height="300" class="game-canvas"></canvas><div id="human-shot-feedback" class="shot-feedback"></div></div>
+                
+                <!-- --- This is the real-time feedback box, now hidden by default --- -->
+                <p class="feedback-text" id="human-feedback" style="display: none;">Adjust the angle and power to score!</p>
+                <!-- --- This is the Coach's Tip box, now visible --- -->
+                <div id="human-coach-tip"><strong>Coach's Tip:</strong> This is your first shot. See what happens!</div>
+                
+                <div class="controls">
+                    <label>Angle: <span id="human-angle-value">65</span>°</label><input type="range" min="45" max="90" value="65" id="human-angle-slider">
+                    <label>Power: <span id="human-power-value">35</span></label><input type="range" min="10" max="60" value="35" step="0.5" id="human-power-slider">
+                    <button id="human-shoot-btn" class="button-primary">SHOOT!</button>
+                </div>
+            </div>
+            <div id="ai-card" class="player-card">
+                <div class="card-header">
+                    <h3 class="ai-title">HoopsBot</h3>
+                </div>
+                <div class="canvas-container"><canvas id="ai-canvas" width="400" height="300" class="game-canvas"></canvas><div id="ai-shot-feedback" class="shot-feedback"></div><div id="ai-training-overlay" class="ai-training-overlay"><p>🤖 Training...</p><div class="training-progress-bar"><div id="training-progress-fill"></div></div></div></div>
+                <div id="ai-brain-container">
+                    <h4>AI Brain (Q-Table)</h4>
+                    <p id="q-table-desc"></p>
+                    <div id="q-table-visual"></div>
+                </div>
+                <div id="ai-coach-tip"><strong>Coach's Tip:</strong> After your turn, use the <strong>'Train'</strong> buttons to make me smarter.</div>
+                <div class="ai-controls">
+                    <button class="button-primary small" onclick="runAiTraining(1)">Train 1</button>
+                    <button class="button-primary small" onclick="runAiTraining(100)">Train 100</button>
+                    <button class="button-primary small" onclick="runAiTraining(1000)">Train 1k</button>
+                    <button class="button-primary small" onclick="runAiTraining(5000)">Train 5k</button>
+                </div>
+                 <button id="ai-shoot-btn" class="button-primary">SHOOT!</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ADDED FIREBASE SDKS (compatibility version) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.0/gsap.min.js"></script>
+    <script>
+    
+    // --- ADDED: FIREBASE INITIALIZATION ---
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDgXAFhGTAfxUMHcB6OHKbZG4M9a3_xFpI",
+      authDomain: "ai-hoops.firebaseapp.com",
+      databaseURL: "https://ai-hoops-default-rtdb.firebaseio.com",
+      projectId: "ai-hoops",
+      storageBucket: "ai-hoops.firebasestorage.app",
+      messagingSenderId: "1802476547",
+      appId: "1:1802476547:web:be70142e55ca39c042c236",
+      measurementId: "G-JBCPQZ5YLQ"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const analytics = firebase.analytics(app);
+    const db = firebase.database(); // This is your Realtime Database
+    let currentUserId = null; // We will use this to track the player
+    // --- END OF FIREBASE INITIALIZATION ---
+
+    
+    const D = document;
+    // --- Moved basket & backboard 80px lower (y: 65->145, backboardY: 55->135) ---
+    const CONFIG = { SHOTS_PER_ROUND: 5, PHYSICS: { GRAVITY: 0.25, VEL_FACTOR: 0.3, BALL_SIZE: 8, HOOP: { x: 370, y: 145, backboardY: 135, backboardH: 40, rimThick: 3, frontRimX: 355, backRimX: 385 }, HOOP_R: 12 }, COLORS: { HUMAN: '#FF71CD', AI: '#00C2FF', ACCENT: '#00FFD1', SECONDARY: '#9CA3AF', BALL: '#F97316' } };
+    let activeLevel = 1, gameState = 'IDLE', humanScore = 0, aiScore = 0;
+    let playerInfo = {};
+    let unlockedLevel, completedLevels, scoreHistory; // Initialize these in the reset function
+    
+    // Function to load state from localStorage or set defaults
+    function loadAndResetState() {
+        unlockedLevel = parseInt(localStorage.getItem('aiHoopsUnlockedLevel')) || 1;
+        completedLevels = JSON.parse(localStorage.getItem('aiHoopsCompletedLevels')) || [];
+        scoreHistory = JSON.parse(localStorage.getItem('aiHoopsScoreHistory')) || [];
+    }
+    
+    loadAndResetState(); // Load state on initial script load
+
+    let basketballState = {};
+    const ui = {
+        welcomeOverlay: D.getElementById('welcome-overlay'),
+        playerInfoForm: D.getElementById('player-info-form'),
+        continueToGameBtn: D.getElementById('continue-to-game-btn'),
+        levelSelectionSection: D.getElementById('level-selection-section'),
+        levelSelectBtns: D.querySelectorAll('.level-select-btn'),
+        gameModalOverlay: D.getElementById('game-modal-overlay'), gameModal: D.getElementById('game-modal'),
+        gameContainer: D.querySelector('.game-container'), gameTitle: D.getElementById('game-title'), gameSubtitle: D.getElementById('game-subtitle'),
+        statusText: D.getElementById('game-status-text'),
+        scoreHistoryBoard: D.getElementById('score-history-board'),
+        closeHistoryBtn: D.getElementById('close-history-btn'), 
+        openHistoryBtn: D.getElementById('open-history-btn'),
+        humanScore: D.querySelector('#human-score-display .score-value'), aiScore: D.querySelector('#ai-score-display .score-value'),
+        human: { card: D.getElementById('human-card'), angleVal: D.getElementById('human-angle-value'), powerVal: D.getElementById('human-power-value'), angleSlider: D.getElementById('human-angle-slider'), powerSlider: D.getElementById('human-power-slider'), shootBtn: D.getElementById('human-shoot-btn'), feedback: D.getElementById('human-feedback'), shotFeedback: D.getElementById('human-shot-feedback'), coachTip: D.getElementById('human-coach-tip') },
+        ai: { card: D.getElementById('ai-card'), qTableDesc: D.getElementById('q-table-desc'), qTableVisual: D.getElementById('q-table-visual'), trainingOverlay: D.getElementById('ai-training-overlay'), progressFill: D.getElementById('training-progress-fill'), coachTip: D.getElementById('ai-coach-tip'), shootBtn: D.getElementById('ai-shoot-btn'), trainingBtns: D.querySelectorAll('.ai-controls button'), shotFeedback: D.getElementById('ai-shot-feedback') },
+    };
+
+    D.addEventListener('DOMContentLoaded', () => {
+        showModal('welcome');
+        updatePersistentHistoryBoard();
+        
+        // --- MODIFICATION 2: Full reset logic for new user ---
+        ui.continueToGameBtn.addEventListener('click', () => {
+            const firstName = D.getElementById('first-name').value.trim();
+            const lastNameInitial = D.getElementById('last-initial').value.trim();
+            const age = D.getElementById('age').value.trim();
+            const grade = D.getElementById('grade').value.trim();
+
+            if (!firstName || !lastNameInitial || !age || !grade) {
+                alert('Please fill out all your info to start!');
+                return;
+            }
+            
+            // --- This is the full reset for a new user ---
+            localStorage.removeItem('aiHoopsUnlockedLevel');
+            localStorage.removeItem('aiHoopsCompletedLevels');
+            localStorage.removeItem('aiHoopsScoreHistory');
+            loadAndResetState(); // Reloads variables to their defaults
+            updatePersistentHistoryBoard(); // Clears the history display
+            // --- End of reset logic ---
+
+            playerInfo = {
+                firstName: firstName,
+                lastNameInitial: lastNameInitial,
+                age: age,
+                grade: grade
+            };
+            
+            console.log("Saving new user data to Firebase:", playerInfo);
+            const userListRef = db.ref('users');
+            const newUserRef = userListRef.push(); 
+            currentUserId = newUserRef.key; 
+            playerInfo.createdAt = new Date().toISOString(); 
+            newUserRef.set(playerInfo)
+                .then(() => console.log("User data saved successfully! ID:", currentUserId))
+                .catch(error => console.error("Firebase user save error:", error));
+
+            gsap.to(ui.playerInfoForm, { autoAlpha: 0, height: 0, duration: 0.4, onComplete: () => ui.playerInfoForm.style.display = 'none' });
+            gsap.fromTo(ui.levelSelectionSection, {autoAlpha: 0}, {display: 'block', autoAlpha: 1, duration: 0.5, delay: 0.4});
+            D.querySelector('.human-title').textContent = playerInfo.firstName;
+            updateLevelSelectionUI();
+        });
+
+        ui.levelSelectBtns.forEach(btn => btn.addEventListener('click', (e) => {
+            if (e.currentTarget.classList.contains('locked')) return;
+            activeLevel = parseInt(e.currentTarget.dataset.level);
+            hideModal('welcome', () => showLevelIntro(activeLevel));
+        }));
+        ui.human.shootBtn.addEventListener('click', humanAction);
+        ui.ai.shootBtn.addEventListener('click', aiAction);
+        ui.human.angleSlider.addEventListener('input', e => ui.human.angleVal.textContent = e.target.value);
+        ui.human.powerSlider.addEventListener('input', e => ui.human.powerVal.textContent = e.target.value);
+        
+        ui.closeHistoryBtn.addEventListener('click', () => {
+            ui.scoreHistoryBoard.classList.remove('visible');
+            if (window.innerWidth > 992) { 
+                ui.openHistoryBtn.style.display = 'block'; 
+                gsap.fromTo(ui.openHistoryBtn, {autoAlpha: 0, x: 20}, {autoAlpha: 1, x: 0, duration: 0.3, delay: 0.3});
+            }
+        });
+        
+        ui.openHistoryBtn.addEventListener('click', () => {
+            ui.scoreHistoryBoard.classList.add('visible');
+            gsap.to(ui.openHistoryBtn, {autoAlpha: 0, duration: 0.2, onComplete: () => ui.openHistoryBtn.style.display = 'none'});
+        });
+    });
+    
+    // --- MODIFICATION 2: Updated level intro text ---
+    function showLevelIntro(level) {
+        let title, instructions;
+        switch(level) {
+            case 1:
+                title = "Level 1: The Practice Court";
+                instructions = `<p>It's a head-to-head match! Your goal:</p>
+                                <ol>
+                                    <li>Practice your shot from a fixed position.</li>
+                                    <li>After your turn, you'll <strong>coach the HoopsBot</strong> to see if it can learn to beat you!</li>
+                                </ol>`;
+                break;
+            case 2:
+                title = "Level 2: Moving Scrimmage";
+                instructions = `<p>The challenge is tougher! The ball is in a <strong>new position</strong> each turn. Your goal:</p>
+                                <ol>
+                                    <li>Adapt and score from all over the court.</li>
+                                    <li>Then, coach the bot and see if its "brain" can learn as fast as you!</li>
+                                </ol>`;
+                break;
+            case 3:
+                title = "Level 3: The Blocker Boss";
+                instructions = `<p>The final challenge! A <strong>moving blocker</strong> is in the way. Your goal:</p>
+                                <ol>
+                                    <li><strong>Time your shot</strong> perfectly to get it over the blocker.</li>
+                                    <li>Coach the bot to see if it can also learn to beat the blocker!</li>
+                                </ol>`;
+                break;
+        }
+
+        const content = `
+            <h1>${title}</h1>
+            <div class="info-section">${instructions}</div>
+            <div class="modal-actions">
+                <button id="start-level-btn" class="button-primary">Let's Play!</button>
+            </div>
+        `;
+        ui.gameModal.innerHTML = content;
+        showModal('game');
+        D.getElementById('start-level-btn').addEventListener('click', () => {
+            hideModal('game', initGame);
+        }, { once: true });
+    }
+
+    function initGame() {
+        gsap.fromTo(ui.gameContainer, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, delay: 0.3 });
+        
+        if (window.innerWidth > 992) { 
+            ui.scoreHistoryBoard.classList.add('visible');
+            ui.openHistoryBtn.style.display = 'none'; 
+        }
+        
+        // --- MODIFICATION 2: Updated level subtitle text ---
+        const subtitles = ["Go head-to-head with the bot from a fixed position.", "Compete from new positions all over the court.", "Can you and the bot score past the moving blocker?"];
+        ui.gameTitle.innerHTML = `AI HOOPS: <span>LEVEL ${activeLevel}</span>`;
+        ui.gameSubtitle.textContent = subtitles[activeLevel - 1];
+        humanScore = 0; aiScore = 0;
+        updateScore('human', 0);
+        updateScore('ai', 0);
+        basketballState.init(activeLevel);
+        updateGameState('HUMAN_TURN');
+    }
+    
+    // --- Removed real-time feedback text updates ---
+    async function humanAction() {
+        if (gameState !== 'HUMAN_TURN' || basketballState.shotsLeft <= 0) return;
+        ui.human.shootBtn.disabled = true;
+        try {
+            basketballState.shotsLeft--;
+            ui.statusText.textContent = `Your turn! Shot ${CONFIG.SHOTS_PER_ROUND - basketballState.shotsLeft} of ${CONFIG.SHOTS_PER_ROUND}.`;
+            const angle = parseFloat(ui.human.angleSlider.value);
+            const power = parseFloat(ui.human.powerSlider.value);
+            const res = await animateShot(angle, power, 'human');
+
+            if (res.result === 'basket') {
+                humanScore++; updateScore('human', humanScore);
+                showShotFeedback('human', 'SWISH!', CONFIG.COLORS.ACCENT);
+            } else {
+                showShotFeedback('human', 'MISS!', CONFIG.COLORS.SECONDARY);
+            }
+            if (basketballState.shotsLeft > 0) {
+                await delay(1000);
+                basketballState.prepareTurn('human');
+            } else {
+                await delay(1500);
+                showRecapModal('human');
+            }
+        } catch (err) { 
+            console.error("Error in humanAction:", err); 
+            ui.statusText.textContent = "An error occurred. Trying to recover...";
+            await delay(1000);
+            
+            if (basketballState.shotsLeft <= 0) {
+                showRecapModal('human');
+            } else {
+                basketballState.prepareTurn('human');
+            }
+        } finally {
+            if (basketballState.shotsLeft > 0) {
+                ui.human.shootBtn.disabled = false;
+            }
+        }
+    }
+
+    async function aiAction() {
+        if ((gameState !== 'AI_SETUP' && gameState !== 'AI_TURN') || basketballState.shotsLeft <= 0) return;
+        if (gameState === 'AI_SETUP') gameState = 'AI_TURN';
+        ui.ai.shootBtn.disabled = true;
+        try {
+            basketballState.shotsLeft--;
+            const shotsTaken = CONFIG.SHOTS_PER_ROUND - basketballState.shotsLeft;
+            ui.statusText.textContent = `HoopsBot's turn! Shot ${shotsTaken} of ${CONFIG.SHOTS_PER_ROUND}.`;
+            ui.ai.coachTip.innerHTML = `<strong>Analyzing...</strong> I'm thinking... 🤔`;
+            await delay(1000);
+
+            const { angle, power } = basketballState.getBestAction();
+            ui.ai.coachTip.innerHTML = `<strong>Okay!</strong> From this spot, my brain says Angle: ${Math.round(angle)}° and Power: ${Math.round(power)} is the best move.`;
+            const res = await animateShot(angle, power, 'ai');
+            if (res.result === 'basket') {
+                aiScore++; updateScore('ai', aiScore);
+                showShotFeedback('ai', 'SWISH!', CONFIG.COLORS.ACCENT);
+            } else {
+                showShotFeedback('ai', 'MISS!', CONFIG.COLORS.SECONDARY);
+            }
+            if (basketballState.shotsLeft > 0) {
+                 await delay(1000);
+                 basketballState.prepareTurn('ai');
+                 ui.ai.coachTip.innerHTML = `I have ${basketballState.shotsLeft} shots left. Ready when you are, Coach!`;
+            } else {
+                await delay(1500);
+                showRecapModal('ai_gameover');
+                gameState = 'GAME_OVER';
+            }
+        } finally {
+            if (basketballState.shotsLeft > 0) ui.ai.shootBtn.disabled = false;
+        }
+    }
+
+    async function runAiTraining(count) {
+        const allAiControls = [...ui.ai.trainingBtns, ui.ai.shootBtn];
+        allAiControls.forEach(b => b.disabled = true);
+        try {
+            if (count === 1) {
+                const c = basketballState.qConfig;
+                const angleIdx = Math.floor(Math.random() * c.angles);
+                const powerIdx = Math.floor(Math.random() * c.powers);
+                const angle = 45 + (angleIdx / (c.angles - 1)) * 45;
+                const power = 10 + (powerIdx / (c.powers - 1)) * 50; 
+
+                const { result } = basketballState.train(true, { powerIdx, angleIdx });
+                basketballState.updateVisuals();
+                
+                let thoughtText = `I tried a random shot (Angle ~${Math.round(angle)}°, Power ~${Math.round(power)}). It was a `;
+                if (result === 'basket') {
+                    thoughtText += `<strong>BASKET!</strong> 🥳 That gets a big <strong>positive reward</strong>. I'm updating my Q-Table to remember that was a great choice!`;
+                } else {
+                    thoughtText += `<strong>MISS.</strong> 😢 That gets a <strong>negative reward</strong>. My Q-Table now knows to avoid that action in this situation.`;
+                }
+                ui.ai.coachTip.innerHTML = thoughtText;
+                return;
+            }
+            gsap.fromTo(ui.ai.trainingOverlay, {autoAlpha: 0}, {autoAlpha: 1, display: 'flex', duration: 0.3});
+            ui.ai.coachTip.innerHTML = `<strong>Training...</strong> I'm running ${count.toLocaleString()} simulations in my head, trying tons of shots from every situation to learn the best moves!`;
+            await new Promise(resolve => {
+                let trained = 0;
+                const trainChunk = () => {
+                    const chunkSize = Math.min(count - trained, Math.ceil(count / 50) || 1);
+                    for (let i = 0; i < chunkSize; i++) basketballState.train();
+                    trained += chunkSize;
+                    gsap.to(ui.ai.progressFill, { width: `${(trained / count) * 100}%`, duration: 0.1, ease: 'linear' });
+                    if (trained < count) requestAnimationFrame(trainChunk); 
+                    else resolve();
+                };
+                trainChunk();
+            });
+            basketballState.updateVisuals();
+            await new Promise(resolve => gsap.to(ui.ai.trainingOverlay, { autoAlpha: 0, duration: 0.3, onComplete: () => { ui.ai.trainingOverlay.style.display = 'none'; resolve(); }}));
+            ui.ai.coachTip.innerHTML = `<strong>Training complete!</strong> I feel way smarter now. Thanks, Coach!`;
+        } finally {
+             ui.ai.trainingBtns.forEach(b => b.disabled = false);
+             if (gameState === 'AI_SETUP' || (gameState === 'AI_TURN' && basketballState.shotsLeft > 0)) ui.ai.shootBtn.disabled = false;
+        }
+    }
+    
+    function showRecapModal(type) {
+        let content = '';
+        if (type === 'human') {
+            content = `
+                <h2>Awesome Round!</h2>
+                <div id="human-info-recap" class="info-section">
+                    <h3>🧠 Your Amazing Brain</h3>
+                    <ol>
+                        <li><strong>Observe:</strong> You watched the ball and hoop.</li>
+                        <li><strong>Intuition:</strong> You "felt" the right angle and power.</li>
+                        <li><strong>Practice:</strong> After a miss, you adjusted based on what you saw. That's learning!</li>
+                    </ol>
+                </div>
+                <div class="modal-actions">
+                    <button id="play-again-human" class="button-primary">Play Your Turn Again</button>
+                    <button id="continue-to-ai" class="button-primary">Coach the Bot!</button>
+                </div>`;
+            ui.gameModal.innerHTML = content;
+            D.getElementById('play-again-human').addEventListener('click', () => {
+                hideModal('game', () => { humanScore = 0; updateScore('human', 0); updateGameState('HUMAN_TURN'); });
+            });
+            D.getElementById('continue-to-ai').addEventListener('click', () => {
+                hideModal('game', () => updateGameState('AI_SETUP'));
+            });
+        } else if (type === 'ai_gameover') {
+            // --- MODIFICATION 3: Save completed level ---
+            if (!completedLevels.includes(activeLevel)) {
+                completedLevels.push(activeLevel);
+                localStorage.setItem('aiHoopsCompletedLevels', JSON.stringify(completedLevels));
+            }
+
+            scoreHistory.push({ human: humanScore, ai: aiScore, level: activeLevel });
+            localStorage.setItem('aiHoopsScoreHistory', JSON.stringify(scoreHistory));
+            updatePersistentHistoryBoard();
+
+            const newScoreData = {
+                human: humanScore,
+                ai: aiScore,
+                level: activeLevel,
+                timestamp: new Date().toISOString(),
+                userId: currentUserId
+            };
+            
+            if (currentUserId) {
+                db.ref('scores').push().set(newScoreData)
+                    .then(() => console.log("Score data saved to 'scores'"))
+                    .catch(error => console.error("Firebase 'scores' save error:", error));
+                db.ref(`userScores/${currentUserId}`).push().set(newScoreData)
+                    .then(() => console.log("Score data saved to 'userScores'"))
+                    .catch(error => console.error("Firebase 'userScores' save error:", error));
+            }
+
+            let levelUnlockedMessage = '';
+            if (activeLevel === unlockedLevel && unlockedLevel < 3) {
+                unlockedLevel++;
+                localStorage.setItem('aiHoopsUnlockedLevel', unlockedLevel);
+                levelUnlockedMessage = `<h3 style="color:var(--accent-color); text-shadow: 0 0 10px var(--accent-glow);">🎉 Level ${unlockedLevel} Unlocked! 🎉</h3>`;
+            }
+
+            let winnerMsg, winnerColor;
+            if (aiScore > humanScore) {
+                winnerMsg = "🤖 HoopsBot Wins! 🤖"; winnerColor = CONFIG.COLORS.AI;
+            } else if (humanScore > aiScore) {
+                winnerMsg = `🥳 ${playerInfo.firstName} Wins! 🥳`; winnerColor = CONFIG.COLORS.HUMAN;
+            } else {
+                winnerMsg = "🤝 It's a Draw! 🤝"; winnerColor = CONFIG.COLORS.ACCENT;
+            }
+            
+            let endGameButtonHtml = '';
+            if (activeLevel === 3) {
+                endGameButtonHtml = `<button class="button-primary" onclick="showFinalePage()">View Final Summary</button>`;
+            }
+            
+            content = `
+                <h1 id="winner-text" style="color:${winnerColor}; text-shadow: 0 0 15px ${winnerColor};">${winnerMsg}</h1>
+                 <div class="info-section">
+                     <h3>Game Summary for ${playerInfo.firstName} ${playerInfo.lastNameInitial}.</h3>
+                     <p style="font-family:'Orbitron', sans-serif; font-size: 2rem; font-weight: 700;">
+                         <span style="color:${CONFIG.COLORS.HUMAN}">${humanScore}</span> &mdash; <span style="color:${CONFIG.COLORS.AI}">${aiScore}</span>
+                     </p>
+                 </div>
+                 <div id="ai-info-recap" class="info-section">
+                     <h3>🤖 How The Bot Learned</h3>
+                      <ol>
+                         <li><strong>State:</strong> It saw where the ball was (and the blocker in Level 3).</li>
+                         <li><strong>Action:</strong> It picked an angle & power from its brain (the Q-Table).</li>
+                         <li><strong>Reward:</strong> It got points for a basket (+10) or a miss (-1).</li>
+                         <li><strong>Learn:</strong> The reward updated its Q-Table to make better choices next time!</li>
+                      </ol>
+                 </div>
+                 ${levelUnlockedMessage} 
+                 <div class="modal-actions">
+                      <button class="button-primary" onclick="hideModal('game', () => showLevelIntro(activeLevel))">Play this Level Again</button>
+                      <button class="button-primary" onclick="returnToLevelSelect()">Choose Your Level</button>
+                      ${endGameButtonHtml}
+                 </div>`;
+            ui.gameModal.innerHTML = content;
+        }
+        showModal('game');
+    }
+    
+    // --- Added restartApp() and modified showFinalePage() ---
+    function restartApp() {
+        hideModal('game', () => {
+            gsap.to(ui.gameContainer, { 
+                autoAlpha: 0, 
+                duration: 0.3, 
+                onComplete: () => {
+                    ui.scoreHistoryBoard.classList.remove('visible');
+                    ui.openHistoryBtn.style.display = 'none';
+                }
+            });
+
+            localStorage.clear(); // Clears all localStorage for a full reset
+            loadAndResetState(); // Reloads all state variables to defaults
+            
+            updatePersistentHistoryBoard();
+
+            D.getElementById('first-name').value = '';
+            D.getElementById('last-initial').value = '';
+            D.getElementById('age').value = '';
+            D.getElementById('grade').value = '';
+            
+            D.querySelector('.human-title').textContent = "You!";
+
+            ui.playerInfoForm.style.display = 'block';
+            gsap.set(ui.playerInfoForm, { autoAlpha: 1, height: 'auto' });
+            ui.levelSelectionSection.style.display = 'none';
+            gsap.set(ui.levelSelectionSection, { autoAlpha: 0 });
+            
+            showModal('welcome');
+        });
+    }
+
+    function showFinalePage() {
+        let wins = 0;
+        let losses = 0;
+        let draws = 0;
+        
+        const persistentHistory = JSON.parse(localStorage.getItem('aiHoopsScoreHistory')) || [];
+        
+        persistentHistory.forEach(score => {
+            if (score.human > score.ai) { wins++; } 
+            else if (score.ai > score.human) { losses++; } 
+            else { draws++; }
+        });
+
+        const summaryHtml = `
+            <h3>Your Final Score Report (All Games)</h3>
+            <ul class="finale-summary">
+                <li class="summary-item"><h4>Total Games Played</h4><p>${persistentHistory.length}</p></li>
+                <li class="summary-item" style="border-color: var(--human-color);"><h4>Your Total Wins</h4><p style="color: var(--human-color);">${wins}</p></li>
+                <li class="summary-item" style="border-color: var(--ai-color);"><h4>Bot Total Wins</h4><p style="color: var(--ai-color);">${losses}</p></li>
+                <li class="summary-item"><h4>Total Draws</h4><p>${draws}</p></li>
+            </ul>
+        `;
+
+        const content = `
+            <h1>🎉 Congratulations, Coach! 🎉</h1>
+            <p>You've completed all levels of the AI Hoops Academy. You're an amazing teacher!</p>
+            <div class="info-section" style="text-align: left;">${summaryHtml}</div>
+            <div class="info-section" style="text-align: left;">
+                <h2>Your AI Coaching Journey</h2>
+                <ol>
+                    <li><strong>Level 1:</strong> You taught the bot a basic <strong>(State, Action) -> Reward</strong> loop.</li>
+                    <li><strong>Level 2:</strong> You introduced more <strong>States</strong> (different positions). The bot's brain (Q-Table) grew.</li>
+                    <li><strong>Level 3:</strong> You added a dynamic <strong>State</strong> (the moving blocker). The bot learned to time its shots.</li>
+                </ol>
+                <p style="text-align: center; margin-top: 1.5rem; color: var(--primary-text); font-weight: 600;">You've successfully trained a Reinforcement Learning agent. Great job! 🤖🏆</p>
+            </div>
+            <div class="modal-actions">
+                 <button class="button-primary" onclick="restartApp()">End Game & Start Over</button>
+            </div>`;
+        ui.gameModal.innerHTML = content;
+        gsap.fromTo(ui.gameModal, {autoAlpha: 0, scale: 0.9}, {autoAlpha: 1, scale: 1, duration: 0.4, ease: 'back.out(1.7)'});
+    }
+
+    function showModal(type, onComplete) {
+        const overlay = (type === 'welcome') ? ui.welcomeOverlay : ui.gameModalOverlay;
+        const modal = (type === 'welcome') ? D.querySelector('#welcome-modal') : ui.gameModal;
+        overlay.style.visibility = 'visible';
+        gsap.to(overlay, { autoAlpha: 1, duration: 0.3 });
+        gsap.fromTo(modal, { autoAlpha: 0, scale: 0.8, y: -50 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.5, ease: 'back.out(1.7)', delay: 0.1, onComplete });
+    }
+
+    function hideModal(type, onComplete) {
+        const overlay = type === 'welcome' ? ui.welcomeOverlay : ui.gameModalOverlay;
+        const modal = type === 'welcome' ? D.querySelector('#welcome-modal') : ui.gameModal;
+        if (modal.scrollTop > 0) {
+            modal.scrollTop = 0;
+        }
+        gsap.to(modal, { autoAlpha: 0, scale: 0.8, y: 50, duration: 0.3, ease: 'power2.in' });
+        gsap.to(overlay, { 
+            autoAlpha: 0, 
+            duration: 0.4, 
+            delay: 0.1, 
+            onComplete: () => {
+                overlay.style.visibility = 'hidden';
+                if (onComplete) { onComplete(); }
+            } 
+        });
+    }
+
+    // --- MODIFICATION 3: Added checkmark logic ---
+    function updateLevelSelectionUI() {
+        ui.levelSelectBtns.forEach(btn => {
+            const level = parseInt(btn.dataset.level);
+            const statusDiv = btn.querySelector('.level-status');
+            
+            btn.classList.remove('locked');
+            statusDiv.innerHTML = '';
+
+            if (level > unlockedLevel) {
+                btn.classList.add('locked');
+                statusDiv.innerHTML = `<svg class="icon-lock"><use href="#icon-lock"/></svg> Locked`;
+            } else if (completedLevels.includes(level)) {
+                statusDiv.innerHTML = `<svg class="icon-check"><use href="#icon-check"/></svg> Completed`;
+            }
+        });
+    }
+
+    function returnToLevelSelect() {
+        hideModal('game', () => {
+            gsap.to(ui.gameContainer, { 
+                autoAlpha: 0, 
+                duration: 0.3, 
+                onComplete: () => {
+                    ui.scoreHistoryBoard.classList.remove('visible');
+                    ui.openHistoryBtn.style.display = 'none';
+                }
+            });
+            ui.playerInfoForm.style.display = 'none';
+            ui.levelSelectionSection.style.display = 'block';
+            gsap.set(ui.levelSelectionSection, { autoAlpha: 1 });
+            updateLevelSelectionUI();
+            showModal('welcome');
+        });
+    }
+
+    function updateScore(player, newScore) {
+        const scoreEl = ui[player + 'Score'];
+        if (newScore === 0 && parseInt(scoreEl.textContent) !== 0) { scoreEl.textContent = 0; return; }
+        gsap.to(scoreEl, {
+            scale: 1.5, duration: 0.2, ease: 'power2.out',
+            onComplete: () => {
+                scoreEl.textContent = newScore;
+                gsap.to(scoreEl, { scale: 1, duration: 0.4, ease: 'elastic.out(1, 0.5)' });
+            }
+        });
+    }
+    
+    function updatePersistentHistoryBoard() {
+        const list = D.getElementById('persistent-history-list');
+        const persistentHistory = JSON.parse(localStorage.getItem('aiHoopsScoreHistory')) || [];
+        list.innerHTML = '';
+        if (persistentHistory.length === 0) { list.innerHTML = '<li>No games completed.</li>'; return; }
+        
+        persistentHistory.slice().reverse().forEach(score => {
+            const li = D.createElement('li');
+            const playerName = playerInfo.firstName || 'You'; 
+            const winner = score.human > score.ai ? playerName : (score.ai > score.human ? 'Bot' : 'Draw');
+            li.innerHTML = `Lvl ${score.level}: <strong>${score.human}</strong> (${playerName}) - <strong>${score.ai}</strong> (Bot) <br> Winner: ${winner}`;
+            list.appendChild(li);
+        });
+    }
+
+    function showShotFeedback(player, text, color) {
+        const feedbackEl = ui[player].shotFeedback;
+        feedbackEl.textContent = text;
+        feedbackEl.style.color = color;
+        gsap.fromTo(feedbackEl, { autoAlpha: 0, scale: 0.5, y: 20 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.7)' });
+        gsap.to(feedbackEl, { autoAlpha: 0, scale: 0.8, y: -20, delay: 1.2, duration: 0.5, ease: 'power2.in' });
+    }
+    
+    // --- Restored static tip logic ---
+    function updateGameState(newState) {
+        gameState = newState;
+        ui.human.card.classList.remove('active-turn', 'inactive-turn');
+        ui.ai.card.classList.remove('active-turn', 'inactive-turn');
+        ui.human.card.classList.add('inactive-turn');
+        ui.ai.card.classList.add('inactive-turn');
+
+        switch (newState) {
+            case 'HUMAN_TURN':
+                ui.human.card.classList.add('active-turn');
+                basketballState.shotsLeft = CONFIG.SHOTS_PER_ROUND;
+                basketballState.prepareTurn('human');
+                ui.human.shootBtn.disabled = false;
+                ui.ai.shootBtn.disabled = true;
+                ui.statusText.textContent = `Your turn! You have ${basketballState.shotsLeft} shots left.`;
+                
+                let tip = "";
+                if (activeLevel === 1) {
+                    tip = "<strong>Coach's Tip:</strong> Try to find the one perfect shot! After you miss, think about what you need to change: more/less power, or a higher/lower angle?";
+                } else if (activeLevel === 2) {
+                    tip = "<strong>Coach's Tip:</strong> The ball is in a new spot! Use what you learned from past shots, but adjust for the new position.";
+                } else {
+                    tip = "<strong>Coach's Tip:</strong> Watch that blocker! You'll need to time your shot perfectly to get it over.";
+                }
+                ui.human.coachTip.innerHTML = tip;
+                
+                break;
+            case 'AI_SETUP':
+                basketballState.shotsLeft = CONFIG.SHOTS_PER_ROUND;
+                ui.ai.card.classList.add('active-turn');
+                basketballState.prepareTurn('ai'); 
+                ui.statusText.textContent = "Time to train the HoopsBot!";
+                ui.ai.coachTip.innerHTML = `<strong>My turn to learn!</strong> Use the train buttons, then click my Shoot button to start.`;
+                ui.human.shootBtn.disabled = true;
+                ui.ai.shootBtn.disabled = false;
+                break;
+            case 'AI_TURN':
+                ui.ai.card.classList.add('active-turn');
+                ui.human.shootBtn.disabled = true;
+                ui.ai.shootBtn.disabled = false;
+                break;
+            case 'GAME_OVER':
+                ui.statusText.textContent = "Game Over!";
+                showRecapModal('ai_gameover');
+                break;
+        }
+    }
+
+    basketballState = {
+        level:1, qTable:[], shotsLeft:0, pos:{x:30, y:300-15}, blocker:{x:225, y:150, w:10, h:50, vy:1.5},
+        qConfig:{angles:10, powers:10, positions:10, blockerPos:5},
+        init(level){this.level=level;const c=this.qConfig;if(level===1)this.qTable=Array(c.powers).fill(0).map(()=>Array(c.angles).fill(0));if(level===2)this.qTable=Array(c.positions).fill(0).map(()=>Array(c.powers).fill(0).map(()=>Array(c.angles).fill(0)));if(level===3)this.qTable=Array(c.positions).fill(0).map(()=>Array(c.blockerPos).fill(0).map(()=>Array(c.powers).fill(0).map(()=>Array(c.angles).fill(0))));this.updateVisuals();},
+        prepareTurn(player){
+            if(this.level>1)this.pos.x=30+Math.random()*170;else this.pos.x=30;
+            if(this.level===3){this.blocker.y=150+Math.random()*100;this.blocker.vy=(Math.random()>0.5?1:-1)*(1+Math.random());}
+            drawCourt(player,this.pos.x,this.level===3?this.blocker:null);this.updateVisuals();
+        },
+        train(getFeedback=false,chosenAction=null){const c=this.qConfig;let angleIdx,powerIdx;if(chosenAction){powerIdx=chosenAction.powerIdx;angleIdx=chosenAction.angleIdx;}else{angleIdx=Math.floor(Math.random()*c.angles);powerIdx=Math.floor(Math.random()*c.powers);}
+        const angle=45+(angleIdx/(c.angles-1))*45,power=10+(powerIdx/(c.powers-1))*50;let stateIndices=[powerIdx,angleIdx];let simPos=30,simBlocker=null;
+        if(this.level>1){const posIdx=Math.floor(Math.random()*c.positions);simPos=30+(posIdx/(c.positions-1))*170;stateIndices.unshift(posIdx);}
+        if(this.level===3){const blockerIdx=Math.floor(Math.random()*c.blockerPos);
+            simBlocker={x:this.blocker.x,w:this.blocker.w,h:this.blocker.h,y:150+(blockerIdx/(c.blockerPos-1))*100,vy:(Math.random()>0.5?1:-1)*(1+Math.random())};
+            stateIndices.splice(1,0,blockerIdx);
+        }
+        const shotInfo=this.getShotReward(angle,power,simPos,simBlocker);const reward=shotInfo.reward;let qEntry=this.qTable;for(let i=0;i<stateIndices.length-1;i++)qEntry=qEntry[stateIndices[i]];const oldQ=qEntry[stateIndices[stateIndices.length-1]];qEntry[stateIndices[stateIndices.length-1]]+=0.1*(reward-oldQ);if(getFeedback)return{result:shotInfo.result};},
+        getShotReward(angle,power,startX,blocker){const{result,reason}=simulateShot(angle,power,startX,blocker);if(result==='basket')return{reward:10,result,reason};if(reason==='blocked')return{reward:-10,result,reason};return{reward:-1,result,reason};},
+        getStateSlices(){let stateSlices=this.qTable;const c=this.qConfig;
+            if(this.level>1){const posIdx=Math.min(c.positions-1,Math.max(0,Math.round(((this.pos.x-30)/170)*(c.positions-1))));stateSlices=this.qTable[posIdx];}
+            if(this.level===3){const blockerIdx=Math.min(c.blockerPos-1,Math.max(0,Math.round(((this.blocker.y-150)/100)*(c.blockerPos-1))));stateSlices=stateSlices[blockerIdx];}
+            return stateSlices;
+        },
+        getBestAction(){let best={q:-Infinity};const c=this.qConfig;const stateSlices=this.getStateSlices();stateSlices.forEach((row,pIndex)=>row.forEach((q,aIndex)=>{if(q>best.q)best={q,p:pIndex,a:aIndex};}));return{angle:45+((best.a||0)/(c.angles-1))*45,power:10+((best.p||0)/(c.powers-1))*50};},
+        updateVisuals(){let desc="";switch(this.level){case 1:desc="This is a simple <strong>Q-Table</strong>, a map of Angle vs. Power. Green squares are good shots the bot has learned!";break;case 2:desc="The <strong>Q-Table</strong> is now a flipbook! Each page is a map for a different <strong>ball position</strong>. We're seeing the page for the current spot.";break;case 3:desc="This <strong>Q-Table</strong> is huge! It's a flipbook where each page is for a unique combo of <strong>ball & blocker position</strong>. This is just one single page!";break;}
+        ui.ai.qTableDesc.innerHTML=desc;const stateSlices=this.getStateSlices();if(!stateSlices||!stateSlices[0])return;let maxQ=-Infinity,minQ=Infinity;stateSlices.forEach(r=>r.forEach(q=>{if(q>maxQ)maxQ=q;if(q<minQ)minQ=q;}));maxQ=Math.max(maxQ,0.1);minQ=Math.min(minQ,-0.1);ui.ai.qTableVisual.innerHTML='';for(let r=0;r<this.qConfig.powers;r++){for(let c=0;c<this.qConfig.angles;c++){const cell=D.createElement('div');cell.className='q-cell';const q=stateSlices[r][c];cell.style.backgroundColor=q>0?`rgba(0, 255, 209,${q/maxQ})`:`rgba(255, 113, 205,${Math.min(1,Math.abs(q/minQ))})`;ui.ai.qTableVisual.appendChild(cell);}}}
+    };
+    
+    const delay=ms=>new Promise(res=>setTimeout(res,ms));function drawCourt(player,startX,blocker){const canvas=D.getElementById(`${player}-canvas`),ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height,p=CONFIG.PHYSICS;ctx.clearRect(0,0,w,h);ctx.fillStyle=player==='human'?CONFIG.COLORS.HUMAN:CONFIG.COLORS.AI;ctx.beginPath();ctx.arc(startX,h-15,10,0,2*Math.PI);ctx.fill();ctx.strokeStyle=CONFIG.COLORS.SECONDARY;ctx.lineWidth=p.HOOP.rimThick;ctx.strokeRect(p.HOOP.x+10,p.HOOP.backboardY,5,p.HOOP.backboardH);ctx.strokeStyle=CONFIG.COLORS.ACCENT;ctx.beginPath();ctx.ellipse(p.HOOP.x,p.HOOP.y,p.HOOP_R,4,0,0,2*Math.PI);ctx.stroke();if(blocker){ctx.fillStyle=CONFIG.COLORS.SECONDARY;ctx.fillRect(blocker.x,blocker.y,blocker.w,blocker.h);}}
+    
+    function simulateShot(angle,power,startX,blockerState){const p=CONFIG.PHYSICS;let b={x:startX,y:300-15,vx:power*p.VEL_FACTOR*Math.cos(angle*Math.PI/180),vy:-power*p.VEL_FACTOR*Math.sin(angle*Math.PI/180)};let prevY = b.y; for(let t=0;t<250;t++){prevY = b.y; b.x+=b.vx;b.y+=b.vy;b.vy+=p.GRAVITY;
+        if (blockerState) {
+            blockerState.y += blockerState.vy;
+            if (blockerState.y < 150 || blockerState.y > 250) {
+                blockerState.vy *= -1;
+            }
+        }
+        if(blockerState&&b.x>blockerState.x&&b.x<blockerState.x+blockerState.w&&b.y>blockerState.y&&b.y<blockerState.y+blockerState.h)return{result:'miss',reason:'blocked',missPoint:{x:b.x,y:b.y}};
+        
+        const isScoring = prevY < p.HOOP.y && b.y >= p.HOOP.y && Math.abs(b.x - p.HOOP.x) < p.HOOP_R && b.vy > 0;
+        if(isScoring)return{result:'basket',reason:null,missPoint:null};
+        
+        if (b.x > p.frontRimX && b.x < p.backRimX && (Math.abs(b.y - p.HOOP.y) < p.BALL_SIZE)) {
+             return{result:'miss',reason:'hit rim',missPoint:{x:b.x,y:b.y}};
+        }
+        if (b.x > p.backRimX && b.x < p.backRimX + 10 && b.y > p.backboardY && b.y < (p.backboardY + p.backboardH)) {
+             return{result:'miss',reason:'hit backboard',missPoint:{x:b.x,y:b.y}};
+        }
+
+        if(b.y>300||b.x>400)return{result:'miss',reason:'out of bounds',missPoint:{x:b.x,y:b.y}};}
+    return{result:'miss',reason:'timeout',missPoint:{x:b.x,y:b.y}};}
+    
+    // --- MODIFICATION 1: Corrected typo from p.BALL_SIDE to p.BALL_SIZE ---
+    async function animateShot(angle,power,player){const canvas=D.getElementById(`${player}-canvas`),ctx=canvas.getContext('2d'),p=CONFIG.PHYSICS;let b={x:basketballState.pos.x,y:300-15,vx:power*p.VEL_FACTOR*Math.cos(angle*Math.PI/180),vy:-power*p.VEL_FACTOR*Math.sin(angle*Math.PI/180)};let blocker=activeLevel===3?{...basketballState.blocker}:null;
+    const shotResult=simulateShot(angle,power,basketballState.pos.x,blocker?{...blocker}:null);
+    let basketScored=false,framesAfterScore=0;let prevY = b.y; for(let t=0;t<250;t++){prevY = b.y; b.x+=b.vx;b.y+=b.vy;b.vy+=p.GRAVITY;if(blocker){blocker.y+=blocker.vy;
+        if(blocker.y<150||blocker.y>250)blocker.vy*=-1;}
+    drawCourt(player,basketballState.pos.x,blocker);ctx.fillStyle=CONFIG.COLORS.BALL;ctx.beginPath();ctx.arc(b.x,b.y,p.BALL_SIZE,0,2*Math.PI);ctx.fill();
+    
+    if(!basketScored && prevY < p.HOOP.y && b.y >= p.HOOP.y && Math.abs(b.x - p.HOOP.x) < p.HOOP_R && b.vy > 0)basketScored=true;
+
+    if(basketScored){framesAfterScore++;if(framesAfterScore>8)break;}
+    if(shotResult.reason==='blocked'&&b.x>(blocker?.x||0))break;if(!basketScored&&(b.y>canvas.height||b.x>canvas.width))break;await delay(16);}
+    return shotResult;}
+    </script>
+</body>
+</html>
