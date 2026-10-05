@@ -12,12 +12,16 @@
             --accent-color: #00FFD1; --accent-glow: rgba(0, 255, 209, 0.4); --shadow-color: rgba(0,0,0,0.4);
             --border-color: rgba(55, 65, 81, 0.5); --accent-gradient: linear-gradient(45deg, var(--accent-color), #00c2ff);
             --bright-text: #CFD8DC;
-            --success-color: #22c55e; /* Green for checkmark */
+            --success-color: #22c55e;
         }
         *, *::before, *after { box-sizing: border-box; }
+        html {
+            /* Fluid type: 16px at 400px → 20px at 1440px — enough to feel bigger without breaking layouts */
+            font-size: clamp(16px, 0.28vw + 12px, 20px);
+        }
         body {
             font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--primary-text);
-            margin: 0; padding: 2rem; display: flex; justify-content: center; align-items: flex-start;
+            margin: 0; padding: 0.75rem; display: flex; justify-content: center; align-items: flex-start;
             min-height: 100vh; overflow-y: auto;
             background-image: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
             background-attachment: fixed;
@@ -30,7 +34,7 @@
         }
         .modal-content {
             background: var(--card-bg); border-radius: 32px; padding: 2rem; text-align: center;
-            max-width: 900px; width: 100%; border: 1px solid var(--border-color);
+            max-width: 980px; width: 100%; border: 1px solid var(--border-color);
             box-shadow: 0 10px 40px rgba(0,0,0,0.6), 0 0 20px var(--accent-glow); transform: scale(0.9); opacity: 0;
             max-height: 90vh;
             overflow-y: auto;
@@ -66,7 +70,6 @@
             list-style: none;
             padding-left: 0;
             margin-top: 1rem;
-            max-height: 200px;
             overflow-y: auto;
         }
         .info-section li {
@@ -106,10 +109,17 @@
         #human-info-recap h3 { color: var(--human-color); }
         #ai-info-recap h3 { color: var(--ai-color); }
         .modal-actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
-        #level-selection-container { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+        
+        #level-selection-container { 
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 1rem; 
+            justify-content: center;
+        }
+        
         .level-select-btn {
-            background: var(--bg-color); border: 2px solid var(--border-color); border-radius: 20px; padding: 1.5rem;
-            width: 220px; text-align: center; cursor: pointer; transition: all 0.2s ease;
+            background: var(--bg-color); border: 2px solid var(--border-color); border-radius: 20px; padding: 1.25rem;
+            flex: 1; min-width: 0; text-align: center; cursor: pointer; transition: all 0.2s ease;
             display: flex; flex-direction: column; justify-content: space-between;
         }
         .level-select-btn:hover { transform: translateY(-10px) scale(1.05); border-color: var(--accent-color); box-shadow: 0 10px 25px 0 var(--accent-glow); }
@@ -120,103 +130,311 @@
         }
         .level-status { font-size: 0.9rem; color: var(--secondary-text); margin-top: 1rem; display: flex; align-items: center; justify-content: center; height: 20px;}
         .level-status svg { width: 1em; height: 1em; margin-right: 0.5em; }
-        .level-status .icon-lock { color: var(--secondary-text); } /* Specific color for lock */
-        .level-status .icon-check { color: var(--success-color); } /* Specific color for check */
-        .level-select-btn h3 { font-size: 1.3rem; font-weight: 600; margin: 0.5rem 0; color: var(--primary-text); }
+        .level-status .icon-lock { color: var(--secondary-text); }
+        .level-status .icon-check { color: var(--success-color); }
+        .level-status .icon-unlock { color: var(--accent-color); }
+
+        .level-select-btn h3 { font-size: 1.3rem; font-weight: 600; margin: 1rem 0; color: var(--primary-text); }
         #winner-text { font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 700; text-shadow: 0 0 15px rgba(255,255,255,0.5); }
-        .game-container { visibility: hidden; width: 100%; max-width: 1200px; opacity: 0; }
-        header { text-align: center; margin-bottom: 2rem; }
-        header h1 { font-family: 'Orbitron', sans-serif; font-size: 3.5rem; font-weight: 700; margin: 0; letter-spacing: -1.5px; }
+        .game-container { visibility: hidden; width: 100%; max-width: min(1600px, 96vw); opacity: 0; }
+
+        header { text-align: center; margin-bottom: 0.75rem; }
+        header h1 { font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 700; margin: 0; letter-spacing: -1px; }
         header h1 span { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px var(--accent-glow)); }
-        header p { font-size: 1.1rem; color: var(--secondary-text); }
-        #scoreboard { background: var(--card-bg); border-radius: 20px; padding: 1rem 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border-color); box-shadow: 0 4px 20px var(--shadow-color); backdrop-filter: blur(10px); }
-        #scoreboard-header { display: flex; justify-content: space-around; font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: var(--secondary-text); margin-bottom: 0.5rem; }
+        header p { font-size: 0.85rem; color: var(--secondary-text); margin: 0.15rem 0 0; }
+        #scoreboard { background: var(--card-bg); border-radius: 16px; padding: 0.5rem 1rem; margin-bottom: 0.75rem; border: 1px solid var(--border-color); box-shadow: 0 4px 20px var(--shadow-color); backdrop-filter: blur(10px); }
+        #scoreboard-header { display: flex; justify-content: space-around; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: var(--secondary-text); margin-bottom: 0.1rem; }
         #human-score-label { color: var(--human-color); } #ai-score-label { color: var(--ai-color); }
-        #scores { display: flex; justify-content: space-around; align-items: center; font-family: 'Orbitron', sans-serif; font-size: 4rem; font-weight: 700; }
+        #scores { display: flex; justify-content: space-around; align-items: center; font-family: 'Orbitron', sans-serif; font-size: 2.2rem; font-weight: 700; }
         .score-value { display: inline-block; }
-        #human-score-display .score-value { color: var(--human-color); text-shadow: 0 0 15px var(--human-color); } 
+        #human-score-display .score-value { color: var(--human-color); text-shadow: 0 0 15px var(--human-color); }
         #ai-score-display .score-value { color: var(--ai-color); text-shadow: 0 0 15px var(--ai-color); }
-        #game-status-text { font-size: 1.1rem; font-weight: 600; min-height: 24px; margin-top: 1.5rem; text-shadow: 0 0 5px var(--accent-glow); color: var(--accent-color); text-align: center; }
-        .player-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-        .player-card { 
-            position: relative; background: var(--card-bg); border-radius: 24px; padding: 1.5rem; text-align: center; 
-            border: 1px solid var(--border-color); box-shadow: 0 8px 30px var(--shadow-color); 
+        #game-status-text { font-size: 0.85rem; font-weight: 600; min-height: 18px; margin: 0.3rem 0 0.4rem; text-shadow: 0 0 5px var(--accent-glow); color: var(--accent-color); text-align: center; }
+        .player-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        .player-card {
+            position: relative; background: var(--card-bg); border-radius: 16px; padding: 0.75rem; text-align: center;
+            border: 1px solid var(--border-color); box-shadow: 0 8px 30px var(--shadow-color);
             transition: all 0.4s ease; display: flex; flex-direction: column; backdrop-filter: blur(10px);
         }
         .player-card.inactive-turn { opacity: 0.6; transform: scale(0.97); }
         .player-card.active-turn { opacity: 1; transform: scale(1); filter: grayscale(0); }
         #human-card.active-turn { border-color: var(--human-color); box-shadow: 0 0 25px 0 rgba(255, 113, 205, 0.4); }
         #ai-card.active-turn { border-color: var(--ai-color); box-shadow: 0 0 25px 0 rgba(0, 194, 255, 0.4); }
-        .card-header h3 { font-family: 'Orbitron', sans-serif; font-size: 2.2rem; font-weight: 700; margin: 0 0 1rem; }
+        .card-header { position: relative; }
+        .card-header h3 { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700; margin: 0 0 0.4rem; }
         .human-title { color: var(--human-color); text-shadow: 0 0 10px var(--human-color); }
         .ai-title { color: var(--ai-color); text-shadow: 0 0 10px var(--ai-color); }
-        .canvas-container { margin: 1rem 0; position: relative; background-color: #1B2735; border-radius: 16px; border: 1px solid var(--border-color); flex-grow: 1; overflow: hidden; }
+
+        .q-table-header {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        #ai-brain-container h4 {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-color);
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        #ai-info-btn {
+            width: 28px; height: 28px;
+            border-radius: 50%; border: 2px solid var(--accent-color);
+            background: var(--bg-color); color: var(--accent-color);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: none;
+            z-index: 10;
+            line-height: 1.1;
+            padding: 0;
+            animation: infoGlow 2.5s ease-in-out infinite;
+        }
+        @keyframes infoGlow {
+            0%   { transform: scale(1);    box-shadow: 0 0 4px var(--accent-glow);  border-color: var(--accent-color); }
+            50%  { transform: scale(1.18); box-shadow: 0 0 14px var(--accent-glow), 0 0 24px var(--accent-color); border-color: var(--accent-color); }
+            100% { transform: scale(1);    box-shadow: 0 0 4px var(--accent-glow);  border-color: var(--accent-color); }
+        }
+        #ai-info-btn:hover {
+            animation: none;
+            transform: scale(1.25); background: var(--accent-color);
+            color: var(--bg-color); box-shadow: 0 0 18px var(--accent-glow);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 8px var(--accent-glow); }
+            50% { transform: scale(1.2); box-shadow: 0 0 20px var(--accent-glow), 0 0 30px var(--accent-color); }
+            100% { transform: scale(1); box-shadow: 0 0 8px var(--accent-glow); }
+        }
+        .pulse-highlight {
+            display: inline-block;
+            animation: pulse 1s ease-in-out 3;
+        }
+
+        .canvas-container { margin: 0.35rem 0; position: relative; background-color: #1B2735; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; }
+        .game-canvas { display: block; width: 100%; height: auto; }
+
         .shot-feedback { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: 'Orbitron', sans-serif; font-size: 3.5rem; font-weight: 700; opacity: 0; text-shadow: 0 0 20px rgba(0,0,0,0.9); }
-        .ai-training-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(9, 10, 15, 0.9); border-radius: 16px; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 10; font-size: 1.2rem; }
-        .training-progress-bar { width: 80%; height: 12px; background: var(--border-color); border-radius: 6px; overflow: hidden; margin-top: 1rem; }
-        .training-progress-fill { width: 0%; height: 100%; background: var(--accent-gradient); border-radius: 6px; transition: width 0.2s linear; }
-        .controls label { font-weight: 600; display: block; margin: 1rem 0 0.5rem; font-size: 1.1rem; }
-        input[type="range"] { -webkit-appearance: none; appearance: none; width: 85%; cursor: pointer; background: transparent; }
-        input[type="range"]::-webkit-slider-runnable-track { height: 10px; background: rgba(9, 10, 15, 0.8); border-radius: 5px; border: 1px solid var(--border-color); }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; margin-top: -7px; width: 24px; height: 24px; background: var(--primary-text); border-radius: 50%; border: 3px solid var(--bg-color); transition: transform 0.2s ease; }
+
+        .ai-training-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(9, 10, 15, 0.9); border-radius: 12px; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 10; font-size: 1.2rem; }
+        .training-progress-bar { width: 80%; height: 10px; background: var(--border-color); border-radius: 6px; overflow: hidden; margin-top: 0.6rem; }
+        .training-progress-fill {
+            width: 0%; height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), #00c2ff, var(--accent-color));
+            background-size: 200% 100%;
+            border-radius: 6px;
+            transition: width 0.2s linear;
+            animation: moveGradient 2s linear infinite;
+        }
+        @keyframes moveGradient {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .controls label { font-weight: 600; display: block; margin: 0.4rem 0 0.2rem; font-size: 0.9rem; }
+        input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; cursor: pointer; background: transparent; }
+        /* WebKit (Chrome, Safari, Edge) */
+        input[type="range"]::-webkit-slider-runnable-track { height: 8px; background: rgba(9, 10, 15, 0.8); border-radius: 5px; border: 1px solid var(--border-color); }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; margin-top: -6px; width: 20px; height: 20px; background: var(--primary-text); border-radius: 50%; border: 3px solid var(--bg-color); transition: transform 0.2s ease; }
         input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.1); }
         #human-angle-slider::-webkit-slider-thumb { box-shadow: 0 0 10px var(--human-color); }
         #human-power-slider::-webkit-slider-thumb { box-shadow: 0 0 10px var(--human-color); }
-        .button-primary { background: var(--accent-gradient); color: var(--bg-color); padding: 1rem 2.5rem; border-radius: 16px; border: none; font-size: 1.2rem; font-family: 'Orbitron', sans-serif; cursor: pointer; transition: all 0.2s ease; margin-top: 1.5rem; box-shadow: 0 4px 15px rgba(0, 255, 209, 0.1); }
+        /* Firefox */
+        input[type="range"]::-moz-range-track { height: 8px; background: rgba(9, 10, 15, 0.8); border-radius: 5px; border: 1px solid var(--border-color); }
+        input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; background: var(--primary-text); border-radius: 50%; border: 3px solid var(--bg-color); transition: transform 0.2s ease; box-sizing: border-box; }
+        input[type="range"]:hover::-moz-range-thumb { transform: scale(1.1); }
+        #human-angle-slider::-moz-range-thumb { box-shadow: 0 0 10px var(--human-color); }
+        #human-power-slider::-moz-range-thumb { box-shadow: 0 0 10px var(--human-color); }
+        .button-primary { background: var(--accent-gradient); color: var(--bg-color); padding: 0.6rem 2rem; border-radius: 12px; border: none; font-size: 1rem; font-family: 'Orbitron', sans-serif; cursor: pointer; transition: all 0.2s ease; margin-top: 0.5rem; box-shadow: 0 4px 15px rgba(0, 255, 209, 0.1); }
         .button-primary:hover:not(:disabled) { transform: translateY(-4px); box-shadow: 0 8px 25px var(--accent-glow); }
         .button-primary:disabled { background: var(--border-color); cursor: not-allowed; opacity: 0.5; }
-        .ai-controls { margin-top: 1rem; }
-        .ai-controls button.small { font-family: 'Poppins', sans-serif; font-weight: 600; padding: 0.6rem 1.2rem; font-size: 0.9rem; margin: 0.25rem; background: var(--ai-color); box-shadow: 0 4px 15px rgba(0, 194, 255, 0.2); border-radius: 12px; }
+        .ai-controls { margin-top: 0.4rem; }
+        .ai-controls button.small { font-family: 'Poppins', sans-serif; font-weight: 600; padding: 0.4rem 0.9rem; font-size: 0.8rem; margin: 0.15rem; background: var(--ai-color); box-shadow: 0 4px 15px rgba(0, 194, 255, 0.2); border-radius: 10px; }
         .ai-controls button.small:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 194, 255, 0.4); }
-        #ai-shoot-btn { background: var(--ai-color); box-shadow: 0 4px 15px rgba(0, 194, 255, 0.2); }
-        #ai-shoot-btn:hover:not(:disabled) { box-shadow: 0 8px 25px rgba(0, 194, 255, 0.4); }
-        #ai-brain-container { background-color: rgba(9, 10, 15, 0.8); border-radius: 12px; padding: 1rem; margin-top: 1rem; border: 1px solid var(--border-color); }
-        #ai-brain-container h4 { margin: 0 0 0.5rem; font-family: 'Orbitron', sans-serif; color: var(--accent-color); text-shadow: 0 0 8px var(--accent-glow); }
-        #q-table-desc { font-size: 0.9rem; color: var(--secondary-text); margin: 0 0 1rem; }
-        #q-table-visual { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; max-width: 200px; margin: 0 auto; }
-        .q-cell { width: 16px; height: 16px; background-color: var(--border-color); border-radius: 4px; transition: background-color 0.3s ease; }
-        
-        /* --- This is the real-time feedback box, now hidden --- */
-        .feedback-text { 
-            display: none !important; /* This hides the element */
+        #ai-brain-container { background-color: rgba(9, 10, 15, 0.8); border-radius: 10px; padding: 0.5rem; border: 1px solid var(--border-color); flex-shrink: 0; }
+
+        #ai-brain-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: stretch;
+            margin-top: 0.35rem;
         }
-        
-        #ai-coach-tip { background-color: rgba(0, 194, 255, 0.1); border: 1px solid var(--ai-color); border-radius: 12px; padding: 1rem; margin-top: 1rem; font-size: 0.95rem; color: var(--primary-text); min-height: 40px; }
+
+
+        .q-table-cartesian-layout {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-rows: 1fr auto;
+            width: 210px;
+            height: 210px;
+            margin: 0.25rem auto 0;
+            position: relative;
+        }
+
+        #q-table-visual {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            gap: 2px;
+            padding: 2px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            align-self: center;
+            width: 170px;
+            height: 170px;
+            margin: auto;
+        }
+
+        .q-axis-label.y-axis {
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-right: 12px;
+            position: relative;
+        }
+
+        .q-axis-label.x-axis {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 12px;
+            position: relative;
+        }
+
+        .q-cell {
+            width: 100%;
+            height: 100%;
+            background-color: var(--border-color);
+            border-radius: 2px;
+            transition: background-color 0.3s ease;
+        }
+
+        /* ═══════════════════════════════════════════
+           Decision Bubble
+        ═══════════════════════════════════════════ */
+        /* Coach tip step styles (used during shooting) */
+        #ai-coach-tip .good  { color: #4ade80; font-weight: 700; }
+        #ai-coach-tip .bad   { color: hsl(320,100%,72%); font-weight: 700; }
+
+        .q-cell.chosen {
+            outline: 2px solid #fff;
+            outline-offset: 1px;
+            border-radius: 3px;
+            z-index: 2;
+            position: relative;
+            animation: chosenPulse 0.5s ease-out forwards;
+        }
+        @keyframes chosenPulse {
+            0%   { box-shadow: 0 0 0px 0px rgba(255,255,255,0.9); transform: scale(1); }
+            40%  { box-shadow: 0 0 10px 5px rgba(255,255,255,0.7); transform: scale(1.4); }
+            100% { box-shadow: 0 0 5px 2px rgba(255,255,255,0.4); transform: scale(1.2); }
+        }
+        /* Q-value label overlaid inside chosen cell */
+        .q-val-label {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.48rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 3px rgba(0,0,0,0.9);
+            pointer-events: none;
+            z-index: 3;
+            line-height: 1;
+        }
+        /* Floating delta number that rises and fades after update */
+        .q-delta-float {
+            position: absolute;
+            font-size: 0.6rem;
+            font-weight: 700;
+            pointer-events: none;
+            z-index: 50;
+            white-space: nowrap;
+            animation: floatUp 1.4s ease-out forwards;
+        }
+        .q-delta-float.good { color: #4ade80; text-shadow: 0 0 4px rgba(0,0,0,0.8); }
+        .q-delta-float.bad  { color: hsl(320,100%,72%); text-shadow: 0 0 4px rgba(0,0,0,0.8); }
+        @keyframes floatUp {
+            0%   { opacity: 1;   transform: translateY(0)     scale(1);    }
+            60%  { opacity: 1;   transform: translateY(-18px) scale(1.1);  }
+            100% { opacity: 0;   transform: translateY(-30px) scale(0.9);  }
+        }
+
+        .q-axis-origin {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+            position: relative;
+        }
+
+        .q-axis-label {
+            font-size: 0.75rem;
+            color: var(--secondary-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+        .q-axis-label strong {
+            color: var(--primary-text);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .q-axis-label .min-val,
+        .q-axis-label .max-val {
+            font-size: 0.7rem;
+            color: var(--secondary-text);
+        }
+
+        .q-axis-label.y-axis .min-val,
+        .q-axis-label.y-axis .max-val {
+             writing-mode: horizontal-tb;
+             transform: rotate(180deg);
+        }
+
+        /* ── State strip ─────────────────────────────────────── */
+        #state-strip-container { display: none; flex-direction: column; align-items: center; gap: 3px; margin-top: 0.3rem; margin-bottom: 0.1rem; }
+        #state-strip-label { font-size: 0.68rem; color: var(--secondary-text); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+        #state-strip-label strong { color: var(--ai-color); font-size: 0.75rem; }
+        .state-strip-row { display: flex; gap: 2px; justify-content: center; align-items: center; }
+        .state-cell { width: 14px; height: 14px; border-radius: 2px; background: var(--border-color); transition: background-color 0.3s, transform 0.2s; flex-shrink: 0; }
+        .state-cell.active { background: var(--ai-color); transform: scale(1.3); box-shadow: 0 0 5px rgba(0,194,255,0.5); }
+        .state-cell.blocker-active { background: hsl(320, 100%, 65%); transform: scale(1.3); box-shadow: 0 0 5px rgba(255,80,150,0.5); }
+        .state-strip-separator { font-size: 0.65rem; color: var(--secondary-text); margin: 0 3px; }
+        @keyframes stateScan {
+            0%   { opacity: 0.25; transform: scale(0.9); }
+            100% { opacity: 0.9;  transform: scale(1.1); }
+        }
+
+        .feedback-text { display: none !important; }
+
+        #ai-coach-tip { background-color: rgba(0, 194, 255, 0.1); border: 1px solid var(--ai-color); border-radius: 10px; padding: 0.5rem 0.75rem; margin-top: 0.4rem; font-size: 0.82rem; color: var(--primary-text); min-height: 30px; }
         #ai-coach-tip strong { color: var(--ai-color); }
-        
-        /* --- This is the Coach's Tip box, now visible --- */
+
         #human-coach-tip {
             background-color: rgba(255, 113, 205, 0.1);
             border: 1px solid var(--human-color);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-top: 1rem;
-            font-size: 0.95rem;
+            border-radius: 10px;
+            padding: 0.4rem 0.75rem;
+            margin-top: 0.4rem;
+            font-size: 0.82rem;
             color: var(--primary-text);
-            min-height: 40px;
         }
         #human-coach-tip strong { color: var(--human-color); }
-        
-        #score-history-board {
-            position: fixed; top: 2rem; right: 2rem; 
-            width: 240px;
-            background: var(--card-bg);
-            border-radius: 16px; border: 1px solid var(--border-color); padding: 1rem 1.5rem; z-index: 500;
-            backdrop-filter: blur(10px); box-shadow: 0 4px 20px var(--shadow-color); opacity: 0;
-            visibility: hidden; transform: translateX(30px); transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        #score-history-board.visible { opacity: 1; visibility: visible; transform: translateX(0); }
-        #score-history-board h4 {
-            font-family: 'Orbitron', sans-serif; text-align: center; color: var(--accent-color);
-            text-shadow: 0 0 8px var(--accent-glow); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;
-            margin: 0.25rem 0 1rem;
-            padding-right: 1.5rem;
-        }
-        #persistent-history-list {
-            list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; font-size: 0.9rem; color: var(--secondary-text);
-        }
-        #persistent-history-list li { padding: 0.5rem 0; border-bottom: 1px solid var(--border-color); }
-        #persistent-history-list li:last-child { border-bottom: none; }
+
 
         .close-btn {
             position: absolute;
@@ -231,27 +449,110 @@
             cursor: pointer;
             padding: 0;
             transition: color 0.2s ease;
+            z-index: 1010;
         }
         .close-btn:hover {
             color: var(--primary-text);
         }
 
+        #info-modal-content {
+            text-align: left;
+            max-width: 560px;
+            padding: 1.5rem 1.75rem 1.25rem;
+        }
+        #info-modal-content h2 {
+            font-family: 'Orbitron', sans-serif; color: var(--accent-color);
+            text-shadow: 0 0 8px var(--accent-glow);
+            text-align: center; font-size: 1.5rem; margin-top: 0; margin-bottom: 0.75rem;
+        }
+        /* Progress dots */
+        #info-card-dots {
+            display: flex; justify-content: center; gap: 6px; margin-bottom: 1rem;
+        }
+        .info-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--border-color); transition: background 0.3s, transform 0.2s;
+            cursor: pointer;
+        }
+        .info-dot.active { background: var(--accent-color); transform: scale(1.3); }
+        .info-dot.visited { background: var(--ai-color); opacity: 0.6; }
+        /* Card container */
+        #info-card-container { position: relative; min-height: 260px; }
+        .info-card {
+            display: none;
+            animation: cardIn 0.25s ease-out;
+        }
+        .info-card.active { display: block; }
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateX(18px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes cardInBack {
+            from { opacity: 0; transform: translateX(-18px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        .info-card.go-back { animation: cardInBack 0.25s ease-out; }
+        .info-card-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .info-card-body p {
+            color: var(--bright-text); font-size: 0.95rem; line-height: 1.6; margin-bottom: 0.6rem;
+        }
+        .info-card-body strong { color: var(--accent-color); }
+        /* Mini cards inside card 1 */
+        .info-mini-card {
+            flex: 1; min-width: 130px; padding: 0.6rem 0.8rem;
+            background: rgba(0,194,255,0.08); border-radius: 10px;
+        }
+        .ai-border { border: 1px solid var(--ai-color); }
+        .info-mini-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem; }
+        .info-mini-sub { font-size: 0.78rem; color: var(--secondary-text); margin-top: 0.2rem; }
+        /* Color rows card 3 */
+        .info-color-row { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: var(--bright-text); }
+        /* Equation chips card 4 */
+        .info-eq-chip { background: rgba(255,255,255,0.06); border: 1px solid var(--border-color); border-radius: 20px; padding: 0.25rem 0.75rem; font-size: 0.85rem; color: var(--secondary-text); }
+        /* Role rows card 5 */
+        .info-role-row { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.9rem; color: var(--bright-text); }
+        .info-role-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1.4; }
+        /* Navigation */
+        #info-card-nav {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-top: 1.25rem; padding-top: 0.75rem;
+            border-top: 1px solid var(--border-color);
+        }
+        #info-card-counter { font-size: 0.82rem; color: var(--secondary-text); font-family: 'Poppins', sans-serif; }
+
+        .info-level { display: none; }
+        #info-modal-content.show-level-1 .info-level-1 { display: block; }
+        #info-modal-content.show-level-2 .info-level-2 { display: block; }
+        #info-modal-content.show-level-3 .info-level-3 { display: block; }
+
+
         @media (max-width: 992px) {
-            body { padding: 1rem; } .player-grid { grid-template-columns: 1fr; }
+            body { padding: 1rem; } .player-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
             header h1 { font-size: 2.5rem; } #scores { font-size: 3rem; }
-            #score-history-board { display: none; }
-            #open-history-btn { display: none !important; }
         }
         @media (max-width: 768px) {
+            body { padding: 0.75rem; } .player-grid { grid-template-columns: 1fr; }
             .modal-content { padding: 1.5rem; } .modal-content h1 { font-size: 2.2rem; }
             .level-select-btn { width: 100%; } #winner-text { font-size: 2.2rem; }
+            header h1 { font-size: 1.8rem; } #scores { font-size: 2.5rem; }
+            .game-canvas { width: 100%; height: auto; display: block; }
+        }
+        @media (max-width: 480px) {
+            .info-form-grid { grid-template-columns: 1fr; }
+            .modal-actions { flex-direction: column; align-items: stretch; }
+            .modal-actions button { width: 100%; }
+            header h1 { font-size: 1.4rem; } #scores { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
-    <button id="open-history-btn" class="button-primary" style="display: none; position: fixed; top: 2rem; right: 2rem; z-index: 499; padding: 0.75rem 1rem; font-size: 0.9rem; border-radius: 12px; font-family: 'Poppins', sans-serif;">
-        Show History
-    </button>
 
     <svg width="0" height="0" style="display:none;">
         <symbol id="icon-basketball-bot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -265,53 +566,196 @@
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
         </symbol>
-        <!-- --- MODIFICATION 3: Added Checkmark Icon --- -->
+        <symbol id="icon-unlock" class="icon-unlock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+        </symbol>
         <symbol id="icon-check" class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
         </symbol>
     </svg>
 
-    <div id="score-history-board">
-        <button id="close-history-btn" class="close-btn">&times;</button>
-        <h4>Game History</h4>
-        <ul id="persistent-history-list">
-            <li>No games completed.</li>
-        </ul>
-    </div>
 
     <div id="welcome-overlay" class="modal-overlay">
         <div id="welcome-modal" class="modal-content">
              <div class="modal-header-graphic"><svg><use href="#icon-basketball-bot"/></svg></div>
               <h1>Welcome to <span>AI Hoops!</span></h1>
-              <p>Your awesome mission: Coach a robot to become a basketball superstar! 🤖🏀</p>
-              
+              <p>Play basketball, and coach a bot to be a superstar! 🤖🏀</p>
+
               <div id="player-info-form" class="welcome-section">
-                   <h2>First, Tell Us About You!</h2>
-                   <div class="info-form-grid">
-                         <div><label for="first-name">First Name</label><input type="text" id="first-name"></div>
-                         <div><label for="last-initial">Last Name Initial</label><input type="text" id="last-initial" maxlength="1"></div>
-                         <div><label for="age">Age</label><input type="number" id="age"></div>
-                         <div><label for="grade">Grade</label><input type="number" id="grade"></div>
-                   </div>
-                   <div style="text-align: center;">
-                         <button id="continue-to-game-btn" class="button-primary">Let's Go!</button>
-                   </div>
+                  <h2>First, Tell Us About You!</h2>
+                  <div class="info-form-grid">
+                        <div><label for="first-name">First Name</label><input type="text" id="first-name"></div>
+                        <div><label for="last-name">Last Name</label><input type="text" id="last-name"></div>
+                        <div><label for="age">Age</label><input type="number" id="age"></div>
+                        <div><label for="grade">Grade</label><input type="number" id="grade"></div>
+                  </div>
+                  <div style="text-align: center;">
+                        <button id="continue-to-game-btn" class="button-primary">Let's Go!</button>
+                  </div>
               </div>
-              
-              <!-- --- MODIFICATION 2: Updated level selection text --- -->
+
               <div id="level-selection-section" class="welcome-section" style="display: none;">
-                   <h2>Select a Level to Start!</h2>
-                   <div id="level-selection-container">
-                         <div class="level-select-btn" data-level="1"><h3>Level 1: The Practice Court</h3><p>Learn the basics and take your first shots from a fixed position.</p><div class="level-status"></div></div>
-                         <div class="level-select-btn" data-level="2"><h3>Level 2: Moving Scrimmage</h3><p>The ball moves to new spots. Can you score from all over the court?</p><div class="level-status"></div></div>
-                         <div class="level-select-btn" data-level="3"><h3>Level 3: The Blocker Boss</h3><p>A moving blocker is in your way! Time your shots perfectly to win.</p><div class="level-status"></div></div>
-                   </div>
+                  <h2>Select a Level to Start!</h2>
+                  <div id="level-selection-container">
+                        <div class="level-select-btn" data-level="1">
+                            <div style="font-size:2rem;margin-bottom:0.25rem">🎯</div>
+                            <h3>Level 1<br><span style="color:var(--accent-color)">One Spot, One Brain</span></h3>
+                            <p>Fixed position. Teach the bot one perfect shot!</p>
+                            <div style="font-size:0.7rem;color:var(--secondary-text);margin-top:0.5rem;font-style:italic;white-space:nowrap">1 state · 100 actions</div>
+                            <div class="level-status"></div>
+                        </div>
+                        <div class="level-select-btn" data-level="2">
+                            <div style="font-size:2rem;margin-bottom:0.25rem">📖</div>
+                            <h3>Level 2<br><span style="color:var(--ai-color)">New Spot, New Page</span></h3>
+                            <p>Ball moves. Bot needs a brain page per position!</p>
+                            <div style="font-size:0.7rem;color:var(--secondary-text);margin-top:0.5rem;font-style:italic;white-space:nowrap">10 states · 1,000 actions</div>
+                            <div class="level-status"></div>
+                        </div>
+                        <div class="level-select-btn" data-level="3">
+                            <div style="font-size:2rem;margin-bottom:0.25rem">📚</div>
+                            <h3>Level 3<br><span style="color:hsl(320,100%,72%)">Dodge the Blocker</span></h3>
+                            <p>Ball + blocker move. The bot's brain becomes a library!</p>
+                            <div style="font-size:0.7rem;color:var(--secondary-text);margin-top:0.5rem;font-style:italic;white-space:nowrap">80 states · 80,000 actions</div>
+                            <div class="level-status"></div>
+                        </div>
+                  </div>
               </div>
         </div>
     </div>
 
     <div id="game-modal-overlay" class="modal-overlay">
         <div id="game-modal" class="modal-content"></div>
+    </div>
+
+    <div id="info-modal-overlay" class="modal-overlay">
+        <div id="info-modal-content" class="modal-content">
+            <button id="close-info-modal-btn" class="close-btn">&times;</button>
+            <h2>Inside HoopsBot's Brain 🧠</h2>
+
+            <!-- Progress dots -->
+            <div id="info-card-dots"></div>
+
+            <!-- Card container -->
+            <div id="info-card-container">
+
+                <!-- Card 1: State & Action -->
+                <div class="info-card" data-card="1">
+                    <div class="info-card-title">👁️ State &amp; 🎯 Action</div>
+                    <div class="info-card-body">
+                        <p>HoopsBot makes decisions the same way a real AI does — it looks at the <strong>State</strong> and picks an <strong>Action</strong>.</p>
+                        <div style="display:flex;gap:0.75rem;margin:1rem 0;flex-wrap:wrap;">
+                            <div class="info-mini-card ai-border">
+                                <div class="info-mini-label" style="color:var(--ai-color)">👁️ State</div>
+                                <strong>What the bot can see</strong>
+                                <div class="info-mini-sub">e.g. ball position, blocker height</div>
+                            </div>
+                            <div class="info-mini-card ai-border">
+                                <div class="info-mini-label" style="color:var(--ai-color)">🎯 Action</div>
+                                <strong>What the bot chooses</strong>
+                                <div class="info-mini-sub">e.g. angle + power combo</div>
+                            </div>
+                        </div>
+                        <p>The Q-Table stores a score for every <strong>State → Action</strong> pair. Higher score = bot thinks that action is better in that state.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Your Level (level-specific) -->
+                <div class="info-card" data-card="2">
+                    <div class="info-card-title">📊 Your Brain Right Now</div>
+                    <div class="info-card-body">
+                        <div class="info-level info-level-1" style="padding:0.75rem 1rem;background:rgba(0,255,209,0.08);border:1px solid var(--accent-color);border-radius:10px;margin-bottom:1rem;">
+                            <div style="font-size:0.85rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--accent-color);margin-bottom:0.3rem">📄 Level 1 — One Grid</div>
+                            <strong>The ball never moves</strong>, so HoopsBot only needs a single 10×10 grid. What you see <em>is</em> the entire brain.
+                        </div>
+                        <div class="info-level info-level-2" style="padding:0.75rem 1rem;background:rgba(0,194,255,0.08);border:1px solid var(--ai-color);border-radius:10px;margin-bottom:1rem;">
+                            <div style="font-size:0.85rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--ai-color);margin-bottom:0.3rem">📖 Level 2 — Flipbook</div>
+                            <strong>The ball moves — so the brain needs pages.</strong> Each ball position gets its own 10×10 grid. You're seeing <em>one page</em> right now.
+                            <div style="margin-top:0.5rem;font-size:0.82rem;color:var(--secondary-text);background:rgba(255,193,7,0.08);border-left:3px solid #ffc107;padding:0.4rem 0.6rem;border-radius:4px;">
+                                💡 Same shot, different position = different result. That's why separate pages exist.
+                            </div>
+                        </div>
+                        <div class="info-level info-level-3" style="padding:0.75rem 1rem;background:rgba(255,80,120,0.08);border:1px solid hsl(320,100%,65%);border-radius:10px;margin-bottom:1rem;">
+                            <div style="font-size:0.85rem;text-transform:uppercase;letter-spacing:0.5px;color:hsl(320,100%,72%);margin-bottom:0.3rem">📚 Level 3 — Library 🤯</div>
+                            <strong>Ball + blocker = the brain is a whole library.</strong> One flipbook per blocker position, each with pages per ball position. You're seeing <em>one page out of hundreds</em>.
+                        </div>
+                        <p style="font-size:0.9rem;color:var(--secondary-text)">Watch the <strong style="color:var(--ai-color)">State strip</strong> above the grid — it shows which state the bot is currently on.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Reading the Grid -->
+                <div class="info-card" data-card="3">
+                    <div class="info-card-title">🎨 Reading the Grid</div>
+                    <div class="info-card-body">
+                        <p>Each cell = one angle+power combo. The color shows how good the bot thinks that combo is:</p>
+                        <div style="display:flex;flex-direction:column;gap:0.75rem;margin:1rem 0;">
+                            <div class="info-color-row">
+                                <span class="color-swatch" style="background:hsl(160,100%,35%);width:32px;height:32px;border-radius:6px;flex-shrink:0;"></span>
+                                <div><strong style="color:hsl(160,100%,55%)">Green</strong> — Good shot! Reward was +1. Bot will try this again.</div>
+                            </div>
+                            <div class="info-color-row">
+                                <span class="color-swatch" style="background:hsl(320,100%,55%);width:32px;height:32px;border-radius:6px;flex-shrink:0;"></span>
+                                <div><strong style="color:hsl(320,100%,72%)">Pink</strong> — Bad shot. Reward was −1. Bot will avoid this.</div>
+                            </div>
+                            <div class="info-color-row">
+                                <span class="color-swatch" style="background:var(--border-color);width:32px;height:32px;border-radius:6px;flex-shrink:0;"></span>
+                                <div><strong style="color:var(--secondary-text)">Grey</strong> — Not tried yet. The bot has no opinion.</div>
+                            </div>
+                        </div>
+                        <p style="font-size:0.88rem;color:var(--secondary-text)">Brighter color = stronger opinion. Faded = only a little data so far.</p>
+                    </div>
+                </div>
+
+                <!-- Card 4: How It Learns -->
+                <div class="info-card" data-card="4">
+                    <div class="info-card-title">🧠 How It Learns</div>
+                    <div class="info-card-body">
+                        <p>After every shot, the bot updates that cell using the <strong>Bellman equation</strong>:</p>
+                        <div style="background:rgba(0,255,209,0.07);border:1px solid var(--accent-color);border-radius:12px;padding:1rem;margin:1rem 0;text-align:center;font-family:monospace;font-size:1rem;color:var(--accent-color);">
+                            Q(s,a) ← Q(s,a) + α × [reward − Q(s,a)]
+                        </div>
+                        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.75rem;">
+                            <div class="info-eq-chip"><span style="color:var(--accent-color)">α = 0.2</span> learning rate</div>
+                            <div class="info-eq-chip"><span style="color:hsl(160,100%,55%)">+1</span> basket</div>
+                            <div class="info-eq-chip"><span style="color:hsl(320,100%,72%)">−1</span> any miss</div>
+                        </div>
+                        <p style="margin-top:1rem;font-size:0.9rem;">The more the bot trains, the stronger its opinions become. Watch the cell <em>pulse</em> and change color after each shot!</p>
+                    </div>
+                </div>
+
+                <!-- Card 5: Your Role -->
+                <div class="info-card" data-card="5">
+                    <div class="info-card-title">⭐ Your Coaching Role</div>
+                    <div class="info-card-body">
+                        <p>You're the coach — HoopsBot can't learn without your help!</p>
+                        <div style="display:flex;flex-direction:column;gap:0.75rem;margin:1rem 0;">
+                            <div class="info-role-row">
+                                <div class="info-role-icon">🏋️</div>
+                                <div><strong>Train buttons</strong> — run simulations to fill the grid. More training = stronger colors = smarter bot.</div>
+                            </div>
+                            <div class="info-role-row">
+                                <div class="info-role-icon">🏀</div>
+                                <div><strong>SHOOT!</strong> — watch the bot use its brain to pick the best cell it knows, then learn from the result.</div>
+                            </div>
+                            <div class="info-role-row">
+                                <div class="info-role-icon">👁️</div>
+                                <div><strong>Watch the grid</strong> — see which cell lights up before each shot, and watch it update after.</div>
+                            </div>
+                        </div>
+                        <p style="text-align:center;font-size:0.9rem;color:var(--accent-color);margin-top:0.5rem;">Now go train HoopsBot and see what it learns! 🚀</p>
+                    </div>
+                </div>
+
+            </div><!-- end card container -->
+
+            <!-- Navigation -->
+            <div id="info-card-nav">
+                <button id="info-prev-btn" class="button-primary small" disabled>← Back</button>
+                <span id="info-card-counter">1 / 5</span>
+                <button id="info-next-btn" class="button-primary small">Next →</button>
+            </div>
+
+        </div>
     </div>
 
     <div class="game-container">
@@ -328,20 +772,16 @@
                 <div id="human-score-display"><span class="score-value">0</span></div>
                 <div id="ai-score-display"><span class="score-value">0</span></div>
             </div>
-            <p id="game-status-text">Your turn! Take your shot.</p>
         </div>
+        <p id="game-status-text">Your turn! Take your shot.</p>
         <div class="player-grid">
             <div id="human-card" class="player-card">
                 <div class="card-header">
                     <h3 class="human-title">You!</h3>
                 </div>
                 <div class="canvas-container"><canvas id="human-canvas" width="400" height="300" class="game-canvas"></canvas><div id="human-shot-feedback" class="shot-feedback"></div></div>
-                
-                <!-- --- This is the real-time feedback box, now hidden by default --- -->
                 <p class="feedback-text" id="human-feedback" style="display: none;">Adjust the angle and power to score!</p>
-                <!-- --- This is the Coach's Tip box, now visible --- -->
-                <div id="human-coach-tip"><strong>Coach's Tip:</strong> This is your first shot. See what happens!</div>
-                
+                <div id="human-coach-tip">Try to find the one perfect shot! Think about what you need: more/less power, or a higher/lower angle?</div>
                 <div class="controls">
                     <label>Angle: <span id="human-angle-value">65</span>°</label><input type="range" min="45" max="90" value="65" id="human-angle-slider">
                     <label>Power: <span id="human-power-value">35</span></label><input type="range" min="10" max="60" value="35" step="0.5" id="human-power-slider">
@@ -352,211 +792,360 @@
                 <div class="card-header">
                     <h3 class="ai-title">HoopsBot</h3>
                 </div>
-                <div class="canvas-container"><canvas id="ai-canvas" width="400" height="300" class="game-canvas"></canvas><div id="ai-shot-feedback" class="shot-feedback"></div><div id="ai-training-overlay" class="ai-training-overlay"><p>🤖 Training...</p><div class="training-progress-bar"><div id="training-progress-fill"></div></div></div></div>
-                <div id="ai-brain-container">
-                    <h4>AI Brain (Q-Table)</h4>
-                    <p id="q-table-desc"></p>
-                    <div id="q-table-visual"></div>
+                <div class="canvas-container">
+                    <canvas id="ai-canvas" width="400" height="300" class="game-canvas"></canvas>
+                    <div id="ai-shot-feedback" class="shot-feedback"></div>
+                    <div id="ai-training-overlay" class="ai-training-overlay"><p>🤖 Training...</p><div class="training-progress-bar"><div id="training-progress-fill" class="training-progress-fill"></div></div></div>
                 </div>
-                <div id="ai-coach-tip"><strong>Coach's Tip:</strong> After your turn, use the <strong>'Train'</strong> buttons to make me smarter.</div>
+
+                <div id="ai-brain-container">
+                    <div class="q-table-header">
+                        <h4>Q-Table</h4>
+                        <button id="ai-info-btn" title="What's HoopsBot thinking? 🧠">?</button>
+                    </div>
+
+                    <div class="q-table-cartesian-layout">
+                        <div class="q-axis-label y-axis">
+                            <span class="max-val">Lo</span>
+                            <strong>PWR</strong>
+                            <span class="min-val">Hi</span>
+                        </div>
+                        <div id="q-table-visual"></div>
+                        <div class="q-axis-origin"></div>
+                        <div class="q-axis-label x-axis">
+                            <span class="min-val">45°</span>
+                            <strong>ANGLE</strong>
+                            <span class="max-val">90°</span>
+                        </div>
+                    </div>
+                    <div id="state-strip-container">
+                        <div id="state-strip-label">State: <strong id="state-strip-title"></strong></div>
+                        <div class="state-strip-row" id="state-strip-pos"></div>
+                        <div class="state-strip-row" id="state-strip-bl" style="display:none;"></div>
+                    </div>
+                </div>
+
+                <div id="ai-coach-tip">Use the <strong>'Train'</strong> buttons to make me smarter! Then click <strong>'SHOOT!'</strong>.</div>
                 <div class="ai-controls">
                     <button class="button-primary small" onclick="runAiTraining(1)">Train 1</button>
+                    <button class="button-primary small" onclick="runAiTraining(10)">Train 10</button>
                     <button class="button-primary small" onclick="runAiTraining(100)">Train 100</button>
                     <button class="button-primary small" onclick="runAiTraining(1000)">Train 1k</button>
-                    <button class="button-primary small" onclick="runAiTraining(5000)">Train 5k</button>
                 </div>
-                 <button id="ai-shoot-btn" class="button-primary">SHOOT!</button>
+                <div><button id="ai-shoot-btn" class="button-primary">SHOOT!</button></div>
             </div>
         </div>
     </div>
-    
-    <!-- ADDED FIREBASE SDKS (compatibility version) -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.0/gsap.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js" onerror="console.warn('Firebase app CDN failed to load')"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js" onerror="console.warn('Firebase firestore CDN failed to load')"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js" onerror="console.warn('Firebase analytics CDN failed to load')"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" onerror="console.warn('GSAP CDN failed — loading fallback'); loadGsapFallback()"></script>
+
     <script>
-    
-    // --- ADDED: FIREBASE INITIALIZATION ---
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDgXAFhGTAfxUMHcB6OHKbZG4M9a3_xFpI",
-      authDomain: "ai-hoops.firebaseapp.com",
-      databaseURL: "https://ai-hoops-default-rtdb.firebaseio.com",
-      projectId: "ai-hoops",
-      storageBucket: "ai-hoops.firebasestorage.app",
-      messagingSenderId: "1802476547",
-      appId: "1:1802476547:web:be70142e55ca39c042c236",
-      measurementId: "G-JBCPQZ5YLQ"
+    // ─────────────────────────────────────────────
+    // GSAP fallback shim (runs if CDN is blocked)
+    // Provides the subset of GSAP methods used by this app
+    // ─────────────────────────────────────────────
+    function loadGsapFallback() {
+        if (typeof gsap !== 'undefined') return;
+        window.gsap = {
+            _tweens: [],
+            to(target, vars) {
+                const { duration = 0.3, delay = 0, onComplete, autoAlpha, scale, x, y, width } = vars;
+                setTimeout(() => {
+                    if (typeof autoAlpha !== 'undefined') {
+                        if (Array.isArray(target)) target.forEach(t => { t.style.opacity = autoAlpha; t.style.visibility = autoAlpha === 0 ? 'hidden' : 'visible'; });
+                        else if (target && target.style) { target.style.opacity = autoAlpha; target.style.visibility = autoAlpha === 0 ? 'hidden' : 'visible'; }
+                    }
+                    if (typeof width !== 'undefined' && target && target.style) target.style.width = typeof width === 'number' ? width + 'px' : width;
+                    if (onComplete) onComplete();
+                }, (delay + duration) * 1000);
+            },
+            from(target, vars) { this.to(target, vars); },
+            fromTo(target, from, to) { this.to(target, to); },
+            set(target, vars) {
+                const { display, autoAlpha, scale, x, y, width } = vars;
+                const el = target;
+                if (!el) return;
+                if (typeof autoAlpha !== 'undefined') { el.style.opacity = autoAlpha; el.style.visibility = autoAlpha === 0 ? 'hidden' : 'visible'; }
+                if (display) el.style.display = display;
+                if (typeof width !== 'undefined') el.style.width = typeof width === 'number' ? width + 'px' : width;
+            },
+            killTweensOf() {},
+        };
+    }
+    // Run fallback check after a brief moment (gives CDN a chance to load first)
+    setTimeout(() => { if (typeof gsap === 'undefined') loadGsapFallback(); }, 100);
+
+    // ─────────────────────────────────────────────
+    // Firebase setup — fully optional
+    // If Firebase CDN fails or is blocked, the game
+    // runs normally without analytics/data saving.
+    //
+    // ⚠️  BEFORE DEPLOYING TO STUDENTS:
+    // The API key below is a public identifier — it is safe to
+    // commit and share. Firebase API keys are NOT passwords.
+    // Real protection comes from Firestore Security Rules.
+    //
+    // Set these rules in Firebase Console → Firestore → Rules:
+    //
+    // rules_version = '2';
+    // service cloud.firestore {
+    //   match /databases/{database}/documents {
+    //     match /users/{userId} {
+    //       allow create, update: if true;
+    //       allow read, delete:   if false;
+    //       match /game_sessions/{id}     { allow create: if true; allow read, update, delete: if false; }
+    //       match /shots/{id}             { allow create: if true; allow read, update, delete: if false; }
+    //       match /training_sessions/{id} { allow create: if true; allow read, update, delete: if false; }
+    //       match /info_modal_views/{id}  { allow create: if true; allow read, update, delete: if false; }
+    //     }
+    //   }
+    // }
+    // ─────────────────────────────────────────────
+    let db = null;
+    let currentUserId = null;
+
+    try {
+        if (typeof firebase !== 'undefined') {
+            const firebaseConfig = {
+                apiKey:            "AIzaSyDgXAFhGTAfxUMHcB6OHKbZG4M9a3_xFpI",
+                authDomain:        "ai-hoops.firebaseapp.com",
+                projectId:         "ai-hoops",
+                storageBucket:     "ai-hoops.firebasestorage.app",
+                messagingSenderId: "1802476547",
+                appId:             "1:1802476547:web:be70142e55ca39c042c236",
+                measurementId:     "G-JBCPQZ5YLQ"
+            };
+            const app = firebase.initializeApp(firebaseConfig);
+            try { firebase.analytics(app); } catch(e) { console.warn('Analytics unavailable:', e.message); }
+            db = firebase.firestore();
+            console.log('Firebase initialized successfully.');
+        } else {
+            console.warn('Firebase not available — running in offline mode. Game data will not be saved.');
+        }
+    } catch(e) {
+        console.warn('Firebase init failed — running in offline mode:', e.message);
+        db = null;
+    }
+
+    // ─────────────────────────────────────────────
+    // Constants & globals
+    // ─────────────────────────────────────────────
+    const D = document;
+    const CONFIG = {
+        SHOTS_PER_ROUND: 5,
+        PHYSICS: {
+            GRAVITY: 0.25, VEL_FACTOR: 0.29, BALL_SIZE: 8,
+            HOOP: { x: 370, y: 145, backboardY: 130, backboardH: 50, rimThick: 3, frontRimX: 345, backRimX: 395 },
+            HOOP_R: 24
+        },
+        COLORS: { HUMAN: '#FF71CD', AI: '#00C2FF', ACCENT: '#00FFD1', SECONDARY: '#9CA3AF', BALL: '#F97316' },
+        // ── Q-learning hyperparameters ──────────────
+        RL: {
+            ALPHA: 0.2,          // learning rate
+            // No γ — bandit task, Q(s,a) ← Q(s,a) + α*(r − Q(s,a))
+            EPSILON_START: 1.0,  // initial exploration probability
+            EPSILON_END: 0.05,   // minimum exploration probability
+            EPSILON_DECAY: 0.995 // multiplicative decay per training step
+        }
     };
 
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const analytics = firebase.analytics(app);
-    const db = firebase.database(); // This is your Realtime Database
-    let currentUserId = null; // We will use this to track the player
-    // --- END OF FIREBASE INITIALIZATION ---
-
-    
-    const D = document;
-    // --- Moved basket & backboard 80px lower (y: 65->145, backboardY: 55->135) ---
-    const CONFIG = { SHOTS_PER_ROUND: 5, PHYSICS: { GRAVITY: 0.25, VEL_FACTOR: 0.3, BALL_SIZE: 8, HOOP: { x: 370, y: 145, backboardY: 135, backboardH: 40, rimThick: 3, frontRimX: 355, backRimX: 385 }, HOOP_R: 12 }, COLORS: { HUMAN: '#FF71CD', AI: '#00C2FF', ACCENT: '#00FFD1', SECONDARY: '#9CA3AF', BALL: '#F97316' } };
     let activeLevel = 1, gameState = 'IDLE', humanScore = 0, aiScore = 0;
     let playerInfo = {};
-    let unlockedLevel, completedLevels, scoreHistory; // Initialize these in the reset function
-    
-    // Function to load state from localStorage or set defaults
+    let unlockedLevel, completedLevels, scoreHistory;
+    let hasPulsedInfoButton = false;
+    let hasDoneFirstTrainAndShoot = false;
+    let isFastTraining = false;
+    let fastTrainAnim = { ballX: 0, ballY: 0, alpha: 0 };
+    let infoModalTimer = null;
+
+    // ── Session / analytics tracking ──────────────────────────
+    let levelStartTime       = null;
+    let cumulativeShotsTrained = 0;
+    let humanShotNumber      = 0;
+    let aiShotNumber         = 0;
+    let infoModalOpenCount   = 0;
+    let humanLastAngle       = null;
+    let humanLastPower       = null;
+    let humanRound           = 1;
+    let globalShotSeq        = 0;    // attempt-level shot counter — never resets mid-attempt
+
+    // ── Attempt tracking per level ────────────────────────────
+    // attemptCount[level]    = how many times this level has been started
+    // bestHumanScore[level]  = highest human score seen across attempts
+    // bestTrainCount[level]  = highest cumulative_shots_trained seen across attempts
+    let attemptCount     = { 1: 0, 2: 0, 3: 0 };
+    let bestHumanScore   = { 1: -1, 2: -1, 3: -1 }; // -1 = never played
+    let bestTrainCount   = { 1: -1, 2: -1, 3: -1 }; // -1 = never played
+
+    // ─────────────────────────────────────────────
+    // Persist / restore localStorage state
+    // ─────────────────────────────────────────────
     function loadAndResetState() {
-        unlockedLevel = parseInt(localStorage.getItem('aiHoopsUnlockedLevel')) || 1;
-        completedLevels = JSON.parse(localStorage.getItem('aiHoopsCompletedLevels')) || [];
-        scoreHistory = JSON.parse(localStorage.getItem('aiHoopsScoreHistory')) || [];
+        unlockedLevel    = parseInt(localStorage.getItem('aiHoopsUnlockedLevel')) || 1;
+        completedLevels  = JSON.parse(localStorage.getItem('aiHoopsCompletedLevels')) || [];
+        scoreHistory     = JSON.parse(localStorage.getItem('aiHoopsScoreHistory')) || [];
+        hasPulsedInfoButton = localStorage.getItem('aiHoopsInfoPulsed') === 'true';
+        attemptCount     = JSON.parse(localStorage.getItem('aiHoopsAttemptCount'))  || { 1: 0, 2: 0, 3: 0 };
+        bestHumanScore   = JSON.parse(localStorage.getItem('aiHoopsBestHuman'))     || { 1: -1, 2: -1, 3: -1 };
+        bestTrainCount   = JSON.parse(localStorage.getItem('aiHoopsBestTrain'))     || { 1: -1, 2: -1, 3: -1 };
     }
-    
-    loadAndResetState(); // Load state on initial script load
+    loadAndResetState();
 
+    // ─────────────────────────────────────────────
+    // UI element references — built inside
+    // DOMContentLoaded so DOM is guaranteed ready
+    // ─────────────────────────────────────────────
     let basketballState = {};
-    const ui = {
-        welcomeOverlay: D.getElementById('welcome-overlay'),
-        playerInfoForm: D.getElementById('player-info-form'),
-        continueToGameBtn: D.getElementById('continue-to-game-btn'),
-        levelSelectionSection: D.getElementById('level-selection-section'),
-        levelSelectBtns: D.querySelectorAll('.level-select-btn'),
-        gameModalOverlay: D.getElementById('game-modal-overlay'), gameModal: D.getElementById('game-modal'),
-        gameContainer: D.querySelector('.game-container'), gameTitle: D.getElementById('game-title'), gameSubtitle: D.getElementById('game-subtitle'),
-        statusText: D.getElementById('game-status-text'),
-        scoreHistoryBoard: D.getElementById('score-history-board'),
-        closeHistoryBtn: D.getElementById('close-history-btn'), 
-        openHistoryBtn: D.getElementById('open-history-btn'),
-        humanScore: D.querySelector('#human-score-display .score-value'), aiScore: D.querySelector('#ai-score-display .score-value'),
-        human: { card: D.getElementById('human-card'), angleVal: D.getElementById('human-angle-value'), powerVal: D.getElementById('human-power-value'), angleSlider: D.getElementById('human-angle-slider'), powerSlider: D.getElementById('human-power-slider'), shootBtn: D.getElementById('human-shoot-btn'), feedback: D.getElementById('human-feedback'), shotFeedback: D.getElementById('human-shot-feedback'), coachTip: D.getElementById('human-coach-tip') },
-        ai: { card: D.getElementById('ai-card'), qTableDesc: D.getElementById('q-table-desc'), qTableVisual: D.getElementById('q-table-visual'), trainingOverlay: D.getElementById('ai-training-overlay'), progressFill: D.getElementById('training-progress-fill'), coachTip: D.getElementById('ai-coach-tip'), shootBtn: D.getElementById('ai-shoot-btn'), trainingBtns: D.querySelectorAll('.ai-controls button'), shotFeedback: D.getElementById('ai-shot-feedback') },
-    };
+    let ui = {};
 
+    // ─────────────────────────────────────────────
+    // DOMContentLoaded – wire up events
+    // ─────────────────────────────────────────────
     D.addEventListener('DOMContentLoaded', () => {
-        showModal('welcome');
-        updatePersistentHistoryBoard();
-        
-        // --- MODIFICATION 2: Full reset logic for new user ---
-        ui.continueToGameBtn.addEventListener('click', () => {
-            const firstName = D.getElementById('first-name').value.trim();
-            const lastNameInitial = D.getElementById('last-initial').value.trim();
-            const age = D.getElementById('age').value.trim();
-            const grade = D.getElementById('grade').value.trim();
-
-            if (!firstName || !lastNameInitial || !age || !grade) {
-                alert('Please fill out all your info to start!');
-                return;
+        ui = {
+            welcomeOverlay: D.getElementById('welcome-overlay'),
+            playerInfoForm: D.getElementById('player-info-form'),
+            continueToGameBtn: D.getElementById('continue-to-game-btn'),
+            levelSelectionSection: D.getElementById('level-selection-section'),
+            levelSelectBtns: D.querySelectorAll('.level-select-btn'),
+            gameModalOverlay: D.getElementById('game-modal-overlay'),
+            gameModal: D.getElementById('game-modal'),
+            infoModalOverlay: D.getElementById('info-modal-overlay'),
+            infoModalContent: D.getElementById('info-modal-content'),
+            closeInfoModalBtn: D.getElementById('close-info-modal-btn'),
+            gameContainer: D.querySelector('.game-container'),
+            gameTitle: D.getElementById('game-title'),
+            gameSubtitle: D.getElementById('game-subtitle'),
+            statusText: D.getElementById('game-status-text'),
+            humanScore: D.querySelector('#human-score-display .score-value'),
+            aiScore: D.querySelector('#ai-score-display .score-value'),
+            human: {
+                card: D.getElementById('human-card'), canvas: D.getElementById('human-canvas'),
+                angleVal: D.getElementById('human-angle-value'), powerVal: D.getElementById('human-power-value'),
+                angleSlider: D.getElementById('human-angle-slider'), powerSlider: D.getElementById('human-power-slider'),
+                shootBtn: D.getElementById('human-shoot-btn'), feedback: D.getElementById('human-feedback'),
+                shotFeedback: D.getElementById('human-shot-feedback'), coachTip: D.getElementById('human-coach-tip')
+            },
+            ai: {
+                card: D.getElementById('ai-card'), canvas: D.getElementById('ai-canvas'),
+                qTableVisual: D.getElementById('q-table-visual'), coachTip: D.getElementById('ai-coach-tip'),
+                shootBtn: D.getElementById('ai-shoot-btn'), trainingBtns: D.querySelectorAll('.ai-controls button'),
+                shotFeedback: D.getElementById('ai-shot-feedback'), aiInfoBtn: D.getElementById('ai-info-btn'),
+                trainingOverlay: D.getElementById('ai-training-overlay'),
+                progressFill: D.getElementById('training-progress-fill')
             }
-            
-            // --- This is the full reset for a new user ---
-            localStorage.removeItem('aiHoopsUnlockedLevel');
-            localStorage.removeItem('aiHoopsCompletedLevels');
-            localStorage.removeItem('aiHoopsScoreHistory');
-            loadAndResetState(); // Reloads variables to their defaults
-            updatePersistentHistoryBoard(); // Clears the history display
-            // --- End of reset logic ---
+        };
 
-            playerInfo = {
-                firstName: firstName,
-                lastNameInitial: lastNameInitial,
-                age: age,
-                grade: grade
-            };
-            
-            console.log("Saving new user data to Firebase:", playerInfo);
-            const userListRef = db.ref('users');
-            const newUserRef = userListRef.push(); 
-            currentUserId = newUserRef.key; 
-            playerInfo.createdAt = new Date().toISOString(); 
-            newUserRef.set(playerInfo)
-                .then(() => console.log("User data saved successfully! ID:", currentUserId))
-                .catch(error => console.error("Firebase user save error:", error));
+        showModal('welcome');
 
-            gsap.to(ui.playerInfoForm, { autoAlpha: 0, height: 0, duration: 0.4, onComplete: () => ui.playerInfoForm.style.display = 'none' });
-            gsap.fromTo(ui.levelSelectionSection, {autoAlpha: 0}, {display: 'block', autoAlpha: 1, duration: 0.5, delay: 0.4});
+        ui.continueToGameBtn.addEventListener('click', () => {
+            const firstName       = D.getElementById('first-name').value.trim();
+            const lastName = D.getElementById('last-name').value.trim();
+            const age             = D.getElementById('age').value.trim();
+            const grade           = D.getElementById('grade').value.trim();
+            if (!firstName || !lastName || !age || !grade) {
+                alert('Please fill out all your info to start!'); return;
+            }
+            localStorage.clear();
+            loadAndResetState();
+    
+            playerInfo = { firstName, lastName, age: parseInt(age) || age, grade };
+
+            if (db) {
+                try {
+                    currentUserId = db.collection('users').doc().id; // generate ID
+                    const now = new Date().toISOString();
+                    db.collection('users').doc(currentUserId).set({
+                        userId: currentUserId,
+                        firstName, lastName,
+                        age: parseInt(age) || age,
+                        grade,
+                        createdAt: now
+                    })
+                    .then(() => console.log("User saved:", currentUserId))
+                    .catch(e => console.warn("Firebase user save error:", e));
+                } catch(e) { console.warn("Firebase user create failed:", e.message); }
+            }
+
+            gsap.to(ui.playerInfoForm, { autoAlpha: 0, duration: 0.3, onComplete: () => {
+                ui.playerInfoForm.style.display = 'none';
+                ui.levelSelectionSection.style.display = 'block';
+                gsap.fromTo(ui.levelSelectionSection, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4 });
+            }});
             D.querySelector('.human-title').textContent = playerInfo.firstName;
             updateLevelSelectionUI();
         });
 
-        ui.levelSelectBtns.forEach(btn => btn.addEventListener('click', (e) => {
+        ui.levelSelectBtns.forEach(btn => btn.addEventListener('click', e => {
             if (e.currentTarget.classList.contains('locked')) return;
             activeLevel = parseInt(e.currentTarget.dataset.level);
+            localStorage.removeItem('aiHoopsJustUnlocked');
             hideModal('welcome', () => showLevelIntro(activeLevel));
         }));
+
         ui.human.shootBtn.addEventListener('click', humanAction);
         ui.ai.shootBtn.addEventListener('click', aiAction);
         ui.human.angleSlider.addEventListener('input', e => ui.human.angleVal.textContent = e.target.value);
         ui.human.powerSlider.addEventListener('input', e => ui.human.powerVal.textContent = e.target.value);
-        
-        ui.closeHistoryBtn.addEventListener('click', () => {
-            ui.scoreHistoryBoard.classList.remove('visible');
-            if (window.innerWidth > 992) { 
-                ui.openHistoryBtn.style.display = 'block'; 
-                gsap.fromTo(ui.openHistoryBtn, {autoAlpha: 0, x: 20}, {autoAlpha: 1, x: 0, duration: 0.3, delay: 0.3});
-            }
-        });
-        
-        ui.openHistoryBtn.addEventListener('click', () => {
-            ui.scoreHistoryBoard.classList.add('visible');
-            gsap.to(ui.openHistoryBtn, {autoAlpha: 0, duration: 0.2, onComplete: () => ui.openHistoryBtn.style.display = 'none'});
-        });
-    });
-    
-    // --- MODIFICATION 2: Updated level intro text ---
-    function showLevelIntro(level) {
-        let title, instructions;
-        switch(level) {
-            case 1:
-                title = "Level 1: The Practice Court";
-                instructions = `<p>It's a head-to-head match! Your goal:</p>
-                                <ol>
-                                    <li>Practice your shot from a fixed position.</li>
-                                    <li>After your turn, you'll <strong>coach the HoopsBot</strong> to see if it can learn to beat you!</li>
-                                </ol>`;
-                break;
-            case 2:
-                title = "Level 2: Moving Scrimmage";
-                instructions = `<p>The challenge is tougher! The ball is in a <strong>new position</strong> each turn. Your goal:</p>
-                                <ol>
-                                    <li>Adapt and score from all over the court.</li>
-                                    <li>Then, coach the bot and see if its "brain" can learn as fast as you!</li>
-                                </ol>`;
-                break;
-            case 3:
-                title = "Level 3: The Blocker Boss";
-                instructions = `<p>The final challenge! A <strong>moving blocker</strong> is in the way. Your goal:</p>
-                                <ol>
-                                    <li><strong>Time your shot</strong> perfectly to get it over the blocker.</li>
-                                    <li>Coach the bot to see if it can also learn to beat the blocker!</li>
-                                </ol>`;
-                break;
-        }
 
-        const content = `
-            <h1>${title}</h1>
-            <div class="info-section">${instructions}</div>
+        ui.ai.aiInfoBtn.addEventListener('click', () => showInfoModal(activeLevel));
+        ui.closeInfoModalBtn.addEventListener('click', () => hideInfoModal());
+    });
+
+    // ─────────────────────────────────────────────
+    // Level intro modal
+    // ─────────────────────────────────────────────
+    function showLevelIntro(level) {
+        const data = [
+            { title: "🎯 Level 1: One Spot, One Brain",
+              body: `<p>It's a head-to-head match! Your goal:</p>
+                     <ol><li>Find the perfect shot from a <strong>fixed position</strong>.</li>
+                     <li>Then coach HoopsBot — watch its Q-Table turn green as it learns!</li></ol>` },
+            { title: "📖 Level 2: New Spot, New Page",
+              body: `<p>Tougher! The ball lands in a <strong>new position every turn</strong>. Your goal:</p>
+                     <ol><li>Adapt and score from anywhere on the court.</li>
+                     <li>Coach the bot — it now needs a <strong>separate brain page</strong> for each position!</li></ol>` },
+            { title: "📚 Level 3: Dodge the Blocker",
+              body: `<p>Final challenge! Ball <strong>and</strong> a moving blocker. Your goal:</p>
+                     <ol><li><strong>Time your shot</strong> to get it past the blocker.</li>
+                     <li>Coach the bot — its brain is now a whole <strong>library</strong> of states. Can it learn timing too?</li></ol>` }
+        ][level - 1];
+
+        ui.gameModal.innerHTML = `
+            <h1>${data.title}</h1>
+            <div class="info-section">${data.body}</div>
             <div class="modal-actions">
                 <button id="start-level-btn" class="button-primary">Let's Play!</button>
-            </div>
-        `;
-        ui.gameModal.innerHTML = content;
+            </div>`;
         showModal('game');
-        D.getElementById('start-level-btn').addEventListener('click', () => {
-            hideModal('game', initGame);
-        }, { once: true });
+        D.getElementById('start-level-btn').addEventListener('click', () => hideModal('game', initGame), { once: true });
     }
 
+    // ─────────────────────────────────────────────
+    // Init game
+    // ─────────────────────────────────────────────
     function initGame() {
         gsap.fromTo(ui.gameContainer, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5, delay: 0.3 });
-        
-        if (window.innerWidth > 992) { 
-            ui.scoreHistoryBoard.classList.add('visible');
-            ui.openHistoryBtn.style.display = 'none'; 
-        }
-        
-        // --- MODIFICATION 2: Updated level subtitle text ---
-        const subtitles = ["Go head-to-head with the bot from a fixed position.", "Compete from new positions all over the court.", "Can you and the bot score past the moving blocker?"];
+        gsap.set(ui.ai.aiInfoBtn, { display: 'inline-block', autoAlpha: 1, scale: 1 });
+        hasDoneFirstTrainAndShoot = false;
+        levelStartTime       = Date.now();
+        humanShotNumber      = 0;
+        aiShotNumber         = 0;
+        cumulativeShotsTrained = 0;
+        humanLastAngle       = null;
+        humanLastPower       = null;
+        humanRound           = 1;
+        globalShotSeq        = 0;
+        attemptCount[activeLevel] = (attemptCount[activeLevel] || 0) + 1;
+        localStorage.setItem('aiHoopsAttemptCount', JSON.stringify(attemptCount));
+        const subtitles = [
+            "🎯 Fixed position — one Q-Table page.",
+            "📖 Ball moves — a new brain page per position.",
+            "📚 Ball + blocker move — the bot's brain is a library."
+        ];
         ui.gameTitle.innerHTML = `AI HOOPS: <span>LEVEL ${activeLevel}</span>`;
         ui.gameSubtitle.textContent = subtitles[activeLevel - 1];
         humanScore = 0; aiScore = 0;
@@ -565,48 +1154,81 @@
         basketballState.init(activeLevel);
         updateGameState('HUMAN_TURN');
     }
-    
-    // --- Removed real-time feedback text updates ---
+
+    // ─────────────────────────────────────────────
+    // Human action
+    // ─────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────
+    //  Arc preview  – dotted trajectory on human canvas
+    // ─────────────────────────────────────────────────────────
+
+    // ─────────────────────────────────────────────────────────
+    //  Shot history log helpers
+    // ─────────────────────────────────────────────────────────
+
     async function humanAction() {
         if (gameState !== 'HUMAN_TURN' || basketballState.shotsLeft <= 0) return;
         ui.human.shootBtn.disabled = true;
         try {
             basketballState.shotsLeft--;
             ui.statusText.textContent = `Your turn! Shot ${CONFIG.SHOTS_PER_ROUND - basketballState.shotsLeft} of ${CONFIG.SHOTS_PER_ROUND}.`;
-            const angle = parseFloat(ui.human.angleSlider.value);
-            const power = parseFloat(ui.human.powerSlider.value);
-            const res = await animateShot(angle, power, 'human');
+            const angle  = parseFloat(ui.human.angleSlider.value);
+            const power  = parseFloat(ui.human.powerSlider.value);
 
-            if (res.result === 'basket') {
-                humanScore++; updateScore('human', humanScore);
-                showShotFeedback('human', 'SWISH!', CONFIG.COLORS.ACCENT);
-            } else {
-                showShotFeedback('human', 'MISS!', CONFIG.COLORS.SECONDARY);
-            }
+            // Clear arc preview before shot animates
+            drawCourt('human', basketballState.pos.x, activeLevel === 3 ? basketballState.blocker : null);
+
+            const res    = await animateShot(angle, power, 'human', 'normal');
+            humanShotNumber++;
+            const humanScoringZone = simulateShot(angle, power, basketballState.pos.x, activeLevel === 3 ? basketballState.blocker : null).result === 'basket';
+
+            // Compute adjustment from previous shot (measures trial-and-error learning)
+            const angleDelta = humanShotNumber > 1 ? Math.round((angle - humanLastAngle) * 10) / 10 : null;
+            const powerDelta = humanShotNumber > 1 ? Math.round((power - humanLastPower) * 10) / 10 : null;
+            humanLastAngle = angle;
+            humanLastPower = power;
+
+            if (res.result === 'basket') humanScore++;
+            updateScore('human', humanScore);
+
+            saveShot('human', {
+                shot_in_round:        humanShotNumber,
+                angle:                Math.round(angle * 10) / 10,
+                power:                Math.round(power * 10) / 10,
+                angle_delta:          angleDelta,
+                power_delta:          powerDelta,
+                adjusted_after_miss:  angleDelta !== null && (Math.abs(angleDelta) > 0 || Math.abs(powerDelta) > 0),
+                result:               res.result,
+                reason:               res.reason || null,
+                is_scoring_zone:      humanScoringZone,
+                running_human_score:  humanScore,
+            });
+
+            if (res.result === 'basket') { showShotFeedback('human', 'SWISH!', CONFIG.COLORS.ACCENT); }
+            else                         { showShotFeedback('human', 'MISS!', CONFIG.COLORS.SECONDARY); }
+
+            // Log this shot
+
             if (basketballState.shotsLeft > 0) {
-                await delay(1000);
+                await delay(600);
                 basketballState.prepareTurn('human');
+                // Redraw arc preview for current slider position
             } else {
-                await delay(1500);
+                await delay(800);
                 showRecapModal('human');
             }
-        } catch (err) { 
-            console.error("Error in humanAction:", err); 
-            ui.statusText.textContent = "An error occurred. Trying to recover...";
-            await delay(1000);
-            
-            if (basketballState.shotsLeft <= 0) {
-                showRecapModal('human');
-            } else {
-                basketballState.prepareTurn('human');
-            }
+        } catch (err) {
+            console.error("Error in humanAction:", err);
+            if (basketballState.shotsLeft <= 0) showRecapModal('human');
+            else basketballState.prepareTurn('human');
         } finally {
-            if (basketballState.shotsLeft > 0) {
-                ui.human.shootBtn.disabled = false;
-            }
+            if (basketballState.shotsLeft > 0) ui.human.shootBtn.disabled = false;
         }
     }
 
+    // ─────────────────────────────────────────────
+    // AI action  (uses greedy argmax from Q-table)
+    // ─────────────────────────────────────────────
     async function aiAction() {
         if ((gameState !== 'AI_SETUP' && gameState !== 'AI_TURN') || basketballState.shotsLeft <= 0) return;
         if (gameState === 'AI_SETUP') gameState = 'AI_TURN';
@@ -615,24 +1237,99 @@
             basketballState.shotsLeft--;
             const shotsTaken = CONFIG.SHOTS_PER_ROUND - basketballState.shotsLeft;
             ui.statusText.textContent = `HoopsBot's turn! Shot ${shotsTaken} of ${CONFIG.SHOTS_PER_ROUND}.`;
-            ui.ai.coachTip.innerHTML = `<strong>Analyzing...</strong> I'm thinking... 🤔`;
-            await delay(1000);
 
-            const { angle, power } = basketballState.getBestAction();
-            ui.ai.coachTip.innerHTML = `<strong>Okay!</strong> From this spot, my brain says Angle: ${Math.round(angle)}° and Power: ${Math.round(power)} is the best move.`;
-            const res = await animateShot(angle, power, 'ai');
-            if (res.result === 'basket') {
-                aiScore++; updateScore('ai', aiScore);
-                showShotFeedback('ai', 'SWISH!', CONFIG.COLORS.ACCENT);
-            } else {
-                showShotFeedback('ai', 'MISS!', CONFIG.COLORS.SECONDARY);
+            const bestInfo = basketballState.getBestAction(true);
+            const { angle, power, pIdx, aIdx, q, allZero } = bestInfo;
+
+            // Pin display page to current state
+            if (basketballState.level > 1) {
+                const c = basketballState.qConfig;
+                basketballState._displayPos = Math.min(c.positions-1, Math.max(0, Math.round(((basketballState.pos.x-30)/170)*(c.positions-1))));
             }
-            if (basketballState.shotsLeft > 0) {
-                 await delay(1000);
-                 basketballState.prepareTurn('ai');
-                 ui.ai.coachTip.innerHTML = `I have ${basketballState.shotsLeft} shots left. Ready when you are, Coach!`;
+            if (basketballState.level === 3) {
+                const c = basketballState.qConfig;
+                basketballState._displayBl = Math.min(c.blockerPos-1, Math.max(0, Math.round(((basketballState.blocker.y-150)/100)*(c.blockerPos-1))));
+            }
+            basketballState.updateVisuals();
+
+            const trainPIdx = pIdx !== undefined ? pIdx : Math.min(basketballState.qConfig.powers-1, Math.max(0, Math.round((power-10)/50*(basketballState.qConfig.powers-1))));
+            const trainAIdx = aIdx !== undefined ? aIdx : Math.min(basketballState.qConfig.angles-1, Math.max(0, Math.round((angle-45)/45*(basketballState.qConfig.angles-1))));
+
+            // ── Highlight chosen cell + show its Q-value ───────
+            highlightChosenCell(trainPIdx, trainAIdx);
+            showQValueOnCell(trainPIdx, trainAIdx, q, allZero);
+
+            // ── Passive coach tip — no click needed ────────────
+            if (allZero || !hasDoneFirstTrainAndShoot) {
+                ui.ai.coachTip.innerHTML =
+                    `🤷 <strong>Brain is empty!</strong> Guessing angle <strong>${Math.round(angle)}°</strong> · power <strong>${Math.round(power)}</strong>. Train me first!`;
+            } else if (q < 0) {
+                let stateInfo = `pos ${Math.round(basketballState.pos.x)}`;
+                if (activeLevel === 3) stateInfo += ` · blocker ${Math.round(basketballState.blocker.y)}`;
+                ui.ai.coachTip.innerHTML =
+                    `😬 <strong>State:</strong> ${stateInfo} → best cell scores <span class="bad">${q.toFixed(2)}</span>. Picking least-bad option.`;
             } else {
-                await delay(1500);
+                let stateInfo = `pos ${Math.round(basketballState.pos.x)}`;
+                if (activeLevel === 3) stateInfo += ` · blocker ${Math.round(basketballState.blocker.y)}`;
+                ui.ai.coachTip.innerHTML =
+                    `🎯 <strong>State:</strong> ${stateInfo} → brightest cell scores <span class="good">+${q.toFixed(2)}</span>. Shooting!`;
+            }
+
+            // Brief pause so kids can see the highlighted cell before the shot
+            await delay(600);
+
+            // ── Fire the shot ──────────────────────────────────
+            const res = await animateShot(angle, power, 'ai', 'normal');
+            aiShotNumber++;
+            saveShot('bot', {
+                shot_in_round:            aiShotNumber,
+                angle:                    Math.round(angle * 10) / 10,
+                power:                    Math.round(power * 10) / 10,
+                result:                   res.result,
+                reason:                   res.reason || null,
+                q_value:                  parseFloat(q.toFixed(3)),
+                q_was_positive:           !allZero && q > 0,
+                all_zero:                 !!allZero,
+                epsilon:                  parseFloat(basketballState.epsilon.toFixed(3)),
+                cumulative_shots_trained: cumulativeShotsTrained,
+                running_ai_score:         aiScore + (res.result === 'basket' ? 1 : 0),
+            });
+
+            // ── Learn — train with real result ─────────────────
+            const oldQ = q;
+            basketballState.train(false, { powerIdx: trainPIdx, angleIdx: trainAIdx }, res);
+            basketballState.updateVisuals();
+
+            // ── Score update ───────────────────────────────────
+            if (res.result === 'basket') { aiScore++; updateScore('ai', aiScore); showShotFeedback('ai', 'SWISH!', CONFIG.COLORS.ACCENT); }
+            else                         { showShotFeedback('ai', 'MISS!', CONFIG.COLORS.SECONDARY); }
+
+            // ── Re-highlight updated cell + float delta number ─
+            highlightChosenCell(trainPIdx, trainAIdx);
+            const reward  = res.result === 'basket' ? 1 : -1;
+            const newQ    = parseFloat((oldQ + CONFIG.RL.ALPHA * (reward - oldQ)).toFixed(2));
+            showQValueOnCell(trainPIdx, trainAIdx, newQ, false);
+            floatQDelta(trainPIdx, trainAIdx, oldQ, newQ);
+
+            // ── Passive post-shot tip ──────────────────────────
+            const isGood = res.result === 'basket';
+            ui.ai.coachTip.innerHTML = isGood
+                ? `🏀 <span class="good">Scored! +${newQ.toFixed(2)} — that cell turns greener. I'll use it again!</span>`
+                : `😔 <span class="bad">Missed. ${newQ.toFixed(2)} — that cell turns pinker. Watch the Q-Table update!</span>`;
+
+            // Brief pause so kids see the color change and delta float
+            await delay(800);
+
+            // ── Advance ────────────────────────────────────────
+            clearCellHighlight();
+            clearQValueLabel();
+
+            if (basketballState.shotsLeft > 0) {
+                basketballState.prepareTurn('ai');
+                ui.ai.coachTip.innerHTML = basketballState.level > 1
+                    ? `<strong>Next shot!</strong> New position — watch the strip and Q-Table flip to the new state page.`
+                    : `<strong>Next shot!</strong> Hit SHOOT! when ready.`;
+            } else {
                 showRecapModal('ai_gameover');
                 gameState = 'GAME_OVER';
             }
@@ -641,52 +1338,233 @@
         }
     }
 
+    // ─────────────────────────────────────────────
+    // Fast-train canvas animator
+    // ─────────────────────────────────────────────
+    function fastTrainAnimator() {
+        if (!isFastTraining) return;
+        const canvas = ui.ai.canvas;
+        const ctx    = canvas.getContext('2d');
+        const p      = CONFIG.PHYSICS;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawCourt('ai', basketballState.pos.x, activeLevel === 3 ? basketballState.blocker : null);
+        ctx.fillStyle = `rgba(249, 115, 22, ${fastTrainAnim.alpha})`;
+        ctx.beginPath();
+        ctx.arc(fastTrainAnim.ballX, fastTrainAnim.ballY, p.BALL_SIZE, 0, 2 * Math.PI);
+        ctx.fill();
+        requestAnimationFrame(fastTrainAnimator);
+    }
+
+    // ─────────────────────────────────────────────
+    // runAiTraining  – main training driver
+    // ─────────────────────────────────────────────
     async function runAiTraining(count) {
+        cumulativeShotsTrained += count;
+        const epsilonBefore = parseFloat(basketballState.epsilon.toFixed(3));
+
         const allAiControls = [...ui.ai.trainingBtns, ui.ai.shootBtn];
         allAiControls.forEach(b => b.disabled = true);
-        try {
-            if (count === 1) {
-                const c = basketballState.qConfig;
-                const angleIdx = Math.floor(Math.random() * c.angles);
-                const powerIdx = Math.floor(Math.random() * c.powers);
-                const angle = 45 + (angleIdx / (c.angles - 1)) * 45;
-                const power = 10 + (powerIdx / (c.powers - 1)) * 50; 
 
-                const { result } = basketballState.train(true, { powerIdx, angleIdx });
-                basketballState.updateVisuals();
-                
-                let thoughtText = `I tried a random shot (Angle ~${Math.round(angle)}°, Power ~${Math.round(power)}). It was a `;
-                if (result === 'basket') {
-                    thoughtText += `<strong>BASKET!</strong> 🥳 That gets a big <strong>positive reward</strong>. I'm updating my Q-Table to remember that was a great choice!`;
-                } else {
-                    thoughtText += `<strong>MISS.</strong> 😢 That gets a <strong>negative reward</strong>. My Q-Table now knows to avoid that action in this situation.`;
+        let animSpeed        = 'normal';
+        let betweenShotDelay = 0;
+        let useOverlay       = false;
+
+        if (count === 1)    { animSpeed = 'normal'; betweenShotDelay = 0; }
+        if (count === 10)   { animSpeed = 'normal'; betweenShotDelay = 100; }
+        if (count >= 100)   { useOverlay = true; }
+
+        isFastTraining = false;
+        gsap.killTweensOf(fastTrainAnim);
+
+        try {
+            if (useOverlay) {
+                // ── Progress-bar path (1k / 5k) ──────────────
+                gsap.fromTo(ui.ai.trainingOverlay, { autoAlpha: 0 }, { autoAlpha: 1, display: 'flex', duration: 0.3 });
+
+                let overlayTip = '';
+                if      (activeLevel === 1) overlayTip = `Training... Running ${count.toLocaleString()} simulations!<br>Green = Good Shot✅, Pink = Bad Shot❌.<br>Click <strong>?</strong> to learn how the Bot's Brain works!`;
+                else if (activeLevel === 2) overlayTip = `Training... Simulating ${count.toLocaleString()} shots from <strong>many different ball positions</strong>!<br>🚀 Click <strong>?</strong> if you're curious!`;
+                else                        overlayTip = `Training... Simulating ${count.toLocaleString()} shots with <strong>different ball AND blocker positions</strong>!<br>My brain is getting huge! 🧠`;
+                ui.ai.coachTip.innerHTML = overlayTip;
+
+                gsap.set(ui.ai.progressFill, { width: '0%' });
+
+                isFastTraining = true;
+                fastTrainAnim.ballX  = basketballState.pos.x;
+                fastTrainAnim.ballY  = 300 - 15;
+                fastTrainAnim.alpha  = 1;
+                gsap.to(fastTrainAnim, {
+                    ballX: CONFIG.PHYSICS.HOOP.x, ballY: CONFIG.PHYSICS.HOOP.y, alpha: 0,
+                    duration: 0.25, ease: 'circ.out', repeat: -1,
+                    onRepeat: () => { fastTrainAnim.ballX = basketballState.pos.x; fastTrainAnim.ballY = 300 - 15; fastTrainAnim.alpha = 1; }
+                });
+                fastTrainAnimator();
+
+                await new Promise(resolve => {
+                    let trained = 0;
+                    // Lock display to page 0 during bulk training so cells
+                    // accumulate visibly instead of flipping every chunk.
+                    basketballState._displayPos = 0;
+                    basketballState._displayBl  = 0;
+
+                    // Put state strip into "scanning all states" mode
+                    const stripContainer = D.getElementById('state-strip-container');
+                    const stripTitle     = D.getElementById('state-strip-title');
+                    if (stripContainer && activeLevel > 1) {
+                        if (stripTitle) stripTitle.textContent = 'sampling all positions...';
+                        stripContainer.querySelectorAll('.state-cell').forEach(sc => {
+                            sc.classList.remove('active', 'blocker-active');
+                            sc.style.background = 'rgba(0,255,209,0.2)';
+                            sc.style.animation  = 'stateScan 1.2s ease-in-out infinite alternate';
+                        });
+                    }
+
+                    const trainChunk = () => {
+                        const chunkSize = Math.min(count - trained, Math.max(10, Math.ceil(count / 20)));
+                        for (let i = 0; i < chunkSize; i++) basketballState.train(false);
+                        trained += chunkSize;
+                        gsap.to(ui.ai.progressFill, { width: `${(trained / count) * 100}%`, duration: 0.05, ease: 'linear' });
+                        // Keep display locked during bulk training
+                        basketballState._displayPos = 0;
+                        basketballState._displayBl  = 0;
+                        basketballState.updateVisuals();
+                        if (trained < count) setTimeout(trainChunk, 16);
+                        else resolve();
+                    };
+                    trainChunk();
+                });
+
+                // Restore strip to normal mode after bulk training
+                const stripContainer2 = D.getElementById('state-strip-container');
+                if (stripContainer2) {
+                    stripContainer2.querySelectorAll('.state-cell').forEach(sc => {
+                        sc.style.background = '';
+                        sc.style.animation  = '';
+                    });
                 }
-                ui.ai.coachTip.innerHTML = thoughtText;
-                return;
+
+                isFastTraining = false;
+                gsap.killTweensOf(fastTrainAnim);
+                basketballState.updateVisuals();
+                ui.ai.coachTip.innerHTML = `<strong>Training complete!</strong> Ran ${count.toLocaleString()} simulations. I feel smarter! 🧠`;
+                await delay(800);
+                await new Promise(resolve => gsap.to(ui.ai.trainingOverlay, { autoAlpha: 0, duration: 0.3, onComplete: () => { ui.ai.trainingOverlay.style.display = 'none'; resolve(); } }));
+
+            } else {
+                // ── Animated path (Train 1 / Train 100) ──────────────────
+                // Display stays locked to the current state page for the whole
+                // run so kids watch ONE page fill up — same as overlay path.
+                // train() still samples random states internally, which is
+                // correct Q-learning; we just don't flicker the display.
+                if (count > 1 && basketballState.level > 1) {
+                    // Lock display page
+                    basketballState._displayPos = Math.min(
+                        basketballState.qConfig.positions - 1,
+                        Math.max(0, Math.round(((basketballState.pos.x - 30) / 170) * (basketballState.qConfig.positions - 1)))
+                    );
+                    if (basketballState.level === 3) {
+                        basketballState._displayBl = Math.min(
+                            basketballState.qConfig.blockerPos - 1,
+                            Math.max(0, Math.round(((basketballState.blocker.y - 150) / 100) * (basketballState.qConfig.blockerPos - 1)))
+                        );
+                    }
+
+                    // Put strip into scanning mode — signals "covering all states"
+                    const stripContainer = D.getElementById('state-strip-container');
+                    const stripTitle     = D.getElementById('state-strip-title');
+                    if (stripContainer) {
+                        if (stripTitle) stripTitle.textContent = 'sampling all positions...';
+                        stripContainer.querySelectorAll('.state-cell').forEach(sc => {
+                            sc.classList.remove('active', 'blocker-active');
+                            sc.style.background = 'rgba(0,194,255,0.2)';
+                            sc.style.animation  = 'stateScan 1.2s ease-in-out infinite alternate';
+                        });
+                    }
+                }
+
+                for (let i = 0; i < count; i++) {
+                    // Let train() pick angle/power using continuous sampling
+                    // (discrete bin centres miss too often — continuous finds real baskets)
+                    // getFeedback=true returns the chosen indices and old/new Q for display
+                    const trainResult = basketballState.train(true);
+                    const { result, angleIdx, powerIdx, oldQ, newQ } = trainResult;
+
+                    const angle = 45 + (angleIdx / (basketballState.qConfig.angles - 1)) * 45;
+                    const power = 10 + (powerIdx / (basketballState.qConfig.powers - 1)) * 50;
+
+                    // Animate the ball for this training shot
+                    await animateShot(angle, power, 'ai', animSpeed);
+
+                    // Highlight the updated cell and show Q delta
+                    highlightChosenCell(powerIdx, angleIdx);
+                    showQValueOnCell(powerIdx, angleIdx, newQ, false);
+                    floatQDelta(powerIdx, angleIdx, oldQ, newQ);
+                    basketballState.updateVisuals();
+
+                    if (count === 1) {
+                        ui.ai.coachTip.innerHTML = `<strong>One simulation run.</strong> My Brain is still nearly empty — I need a lot more training!`;
+                    } else if (count === 10) {
+                        ui.ai.coachTip.innerHTML = `<strong>Shot ${i + 1} of 10...</strong> ${result === 'basket' ? `✅ <strong>Basket!</strong> Watch that cell turn greener!` : `❌ <strong>Miss.</strong> Watch that cell turn pinker!`}`;
+                    } else {
+                        ui.ai.coachTip.innerHTML = `<strong>Training shot ${i + 1} of ${count}...</strong><br>${result === 'basket' ? `✅ <strong>GOOD</strong> shot! (Angle: ${Math.round(angle)}°, Power: ${Math.round(power)})` : `❌ <strong>BAD</strong> shot. (Angle: ${Math.round(angle)}°, Power: ${Math.round(power)})`}`;
+                    }
+
+                    // Keep display page locked for L2/L3
+                    if (count > 1 && basketballState.level > 1) {
+                        basketballState._displayPos = Math.min(
+                            basketballState.qConfig.positions - 1,
+                            Math.max(0, Math.round(((basketballState.pos.x - 30) / 170) * (basketballState.qConfig.positions - 1)))
+                        );
+                        if (basketballState.level === 3) {
+                            basketballState._displayBl = Math.min(
+                                basketballState.qConfig.blockerPos - 1,
+                                Math.max(0, Math.round(((basketballState.blocker.y - 150) / 100) * (basketballState.qConfig.blockerPos - 1)))
+                            );
+                        }
+                        basketballState.updateVisuals();
+                    }
+
+                    if (result === 'basket' && (count === 10 || count === 100)) showShotFeedback('ai', 'SWISH!', CONFIG.COLORS.ACCENT);
+                    if (betweenShotDelay > 0) await delay(betweenShotDelay);
+                }
+
+                // Restore strip after Train 100
+                if (count > 1 && basketballState.level > 1) {
+                    const sc2 = D.getElementById('state-strip-container');
+                    if (sc2) sc2.querySelectorAll('.state-cell').forEach(sc => {
+                        sc.style.background = '';
+                        sc.style.animation  = '';
+                    });
+                    basketballState.updateVisuals(); // Let strip re-render normally
+                }
             }
-            gsap.fromTo(ui.ai.trainingOverlay, {autoAlpha: 0}, {autoAlpha: 1, display: 'flex', duration: 0.3});
-            ui.ai.coachTip.innerHTML = `<strong>Training...</strong> I'm running ${count.toLocaleString()} simulations in my head, trying tons of shots from every situation to learn the best moves!`;
-            await new Promise(resolve => {
-                let trained = 0;
-                const trainChunk = () => {
-                    const chunkSize = Math.min(count - trained, Math.ceil(count / 50) || 1);
-                    for (let i = 0; i < chunkSize; i++) basketballState.train();
-                    trained += chunkSize;
-                    gsap.to(ui.ai.progressFill, { width: `${(trained / count) * 100}%`, duration: 0.1, ease: 'linear' });
-                    if (trained < count) requestAnimationFrame(trainChunk); 
-                    else resolve();
-                };
-                trainChunk();
-            });
-            basketballState.updateVisuals();
-            await new Promise(resolve => gsap.to(ui.ai.trainingOverlay, { autoAlpha: 0, duration: 0.3, onComplete: () => { ui.ai.trainingOverlay.style.display = 'none'; resolve(); }}));
-            ui.ai.coachTip.innerHTML = `<strong>Training complete!</strong> I feel way smarter now. Thanks, Coach!`;
         } finally {
-             ui.ai.trainingBtns.forEach(b => b.disabled = false);
-             if (gameState === 'AI_SETUP' || (gameState === 'AI_TURN' && basketballState.shotsLeft > 0)) ui.ai.shootBtn.disabled = false;
+            isFastTraining = false;
+            gsap.killTweensOf(fastTrainAnim);
+            ui.ai.trainingBtns.forEach(b => b.disabled = false);
+            if (!hasDoneFirstTrainAndShoot) hasDoneFirstTrainAndShoot = true;
+            if (gameState === 'AI_SETUP' || (gameState === 'AI_TURN' && basketballState.shotsLeft > 0)) ui.ai.shootBtn.disabled = false;
+            drawCourt('ai', basketballState.pos.x, activeLevel === 3 ? basketballState.blocker : null);
+            saveTrainingSession({
+                count,
+                cumulative_shots_trained_after: cumulativeShotsTrained,
+                epsilon_before: epsilonBefore,
+                epsilon_after:  parseFloat(basketballState.epsilon.toFixed(3)),
+            });
         }
     }
-    
+
+    // ─────────────────────────────────────────────
+    // Advance to next level
+    // ─────────────────────────────────────────────
+    function goToNextLevel(level) {
+        activeLevel = level;
+        hideModal('game', () => showLevelIntro(level));
+    }
+
+    // ─────────────────────────────────────────────
+    // Recap / end-game modals
+    // ─────────────────────────────────────────────
     function showRecapModal(type) {
         let content = '';
         if (type === 'human') {
@@ -706,218 +1584,422 @@
                 </div>`;
             ui.gameModal.innerHTML = content;
             D.getElementById('play-again-human').addEventListener('click', () => {
-                hideModal('game', () => { humanScore = 0; updateScore('human', 0); updateGameState('HUMAN_TURN'); });
+                hideModal('game', () => {
+                    humanScore = 0;
+                    humanShotNumber = 0;
+                    humanLastAngle = null;
+                    humanLastPower = null;
+                    humanRound++;
+                    updateScore('human', 0);
+                    updateGameState('HUMAN_TURN');
+                });
             });
             D.getElementById('continue-to-ai').addEventListener('click', () => {
                 hideModal('game', () => updateGameState('AI_SETUP'));
             });
         } else if (type === 'ai_gameover') {
-            // --- MODIFICATION 3: Save completed level ---
             if (!completedLevels.includes(activeLevel)) {
                 completedLevels.push(activeLevel);
                 localStorage.setItem('aiHoopsCompletedLevels', JSON.stringify(completedLevels));
             }
 
-            scoreHistory.push({ human: humanScore, ai: aiScore, level: activeLevel });
-            localStorage.setItem('aiHoopsScoreHistory', JSON.stringify(scoreHistory));
-            updatePersistentHistoryBoard();
+            // ── Compute attempt metadata FIRST — used in both scoreHistory and Firebase ──
+            const currentAttempt    = attemptCount[activeLevel] || 1;
+            const isFirstAttempt    = currentAttempt === 1;
+            const isBestHumanScore  = humanScore > (bestHumanScore[activeLevel] ?? -1);
+            const isMostTrained     = cumulativeShotsTrained > (bestTrainCount[activeLevel] ?? -1);
+            if (isBestHumanScore) { bestHumanScore[activeLevel] = humanScore;             localStorage.setItem('aiHoopsBestHuman', JSON.stringify(bestHumanScore)); }
+            if (isMostTrained)    { bestTrainCount[activeLevel] = cumulativeShotsTrained; localStorage.setItem('aiHoopsBestTrain', JSON.stringify(bestTrainCount)); }
 
-            const newScoreData = {
+            const humanAccuracy = humanShotNumber > 0 ? parseFloat((humanScore / humanShotNumber).toFixed(2)) : 0;
+            const aiAccuracy    = aiShotNumber    > 0 ? parseFloat((aiScore    / aiShotNumber   ).toFixed(2)) : 0;
+
+            scoreHistory.push({
                 human: humanScore,
                 ai: aiScore,
                 level: activeLevel,
-                timestamp: new Date().toISOString(),
-                userId: currentUserId
-            };
-            
-            if (currentUserId) {
-                db.ref('scores').push().set(newScoreData)
-                    .then(() => console.log("Score data saved to 'scores'"))
-                    .catch(error => console.error("Firebase 'scores' save error:", error));
-                db.ref(`userScores/${currentUserId}`).push().set(newScoreData)
-                    .then(() => console.log("Score data saved to 'userScores'"))
-                    .catch(error => console.error("Firebase 'userScores' save error:", error));
-            }
+                attempt_number: currentAttempt,
+                is_first_attempt: isFirstAttempt,
+                is_best_human_score: isBestHumanScore,
+                is_most_trained_attempt: isMostTrained,
+                cumulative_shots_trained: cumulativeShotsTrained
+            });
+            localStorage.setItem('aiHoopsScoreHistory', JSON.stringify(scoreHistory));
+
+            saveGameSession({
+                is_first_attempt:        isFirstAttempt,
+                is_best_human_score:     isBestHumanScore,
+                is_most_trained_attempt: isMostTrained,
+                best_human_score_so_far: bestHumanScore[activeLevel],
+                best_train_count_so_far: bestTrainCount[activeLevel],
+                duration_ms:             levelStartTime ? Date.now() - levelStartTime : null,
+                human_score:             humanScore,
+                ai_score:                aiScore,
+                human_shots_taken:       humanShotNumber,
+                ai_shots_taken:          aiShotNumber,
+                human_accuracy:          humanAccuracy,
+                ai_accuracy:             aiAccuracy,
+                cumulative_shots_trained: cumulativeShotsTrained,
+                epsilon_final:           parseFloat(basketballState.epsilon.toFixed(3)),
+                info_modal_opens:        infoModalOpenCount,
+                winner:                  aiScore > humanScore ? 'bot' : humanScore > aiScore ? 'human' : 'draw',
+            });
 
             let levelUnlockedMessage = '';
             if (activeLevel === unlockedLevel && unlockedLevel < 3) {
                 unlockedLevel++;
                 localStorage.setItem('aiHoopsUnlockedLevel', unlockedLevel);
-                levelUnlockedMessage = `<h3 style="color:var(--accent-color); text-shadow: 0 0 10px var(--accent-glow);">🎉 Level ${unlockedLevel} Unlocked! 🎉</h3>`;
+                localStorage.setItem('aiHoopsJustUnlocked', unlockedLevel);
             }
 
-            let winnerMsg, winnerColor;
-            if (aiScore > humanScore) {
-                winnerMsg = "🤖 HoopsBot Wins! 🤖"; winnerColor = CONFIG.COLORS.AI;
-            } else if (humanScore > aiScore) {
-                winnerMsg = `🥳 ${playerInfo.firstName} Wins! 🥳`; winnerColor = CONFIG.COLORS.HUMAN;
-            } else {
-                winnerMsg = "🤝 It's a Draw! 🤝"; winnerColor = CONFIG.COLORS.ACCENT;
-            }
-            
-            let endGameButtonHtml = '';
             if (activeLevel === 3) {
-                endGameButtonHtml = `<button class="button-primary" onclick="showFinalePage()">View Final Summary</button>`;
+                // Level 3 complete — show full performance summary
+                showFinalePage();
+            } else {
+                // Levels 1 & 2 — show brief per-level recap then go to level select
+                showLevelRecap();
             }
-            
-            content = `
-                <h1 id="winner-text" style="color:${winnerColor}; text-shadow: 0 0 15px ${winnerColor};">${winnerMsg}</h1>
-                 <div class="info-section">
-                     <h3>Game Summary for ${playerInfo.firstName} ${playerInfo.lastNameInitial}.</h3>
-                     <p style="font-family:'Orbitron', sans-serif; font-size: 2rem; font-weight: 700;">
-                         <span style="color:${CONFIG.COLORS.HUMAN}">${humanScore}</span> &mdash; <span style="color:${CONFIG.COLORS.AI}">${aiScore}</span>
-                     </p>
-                 </div>
-                 <div id="ai-info-recap" class="info-section">
-                     <h3>🤖 How The Bot Learned</h3>
-                      <ol>
-                         <li><strong>State:</strong> It saw where the ball was (and the blocker in Level 3).</li>
-                         <li><strong>Action:</strong> It picked an angle & power from its brain (the Q-Table).</li>
-                         <li><strong>Reward:</strong> It got points for a basket (+10) or a miss (-1).</li>
-                         <li><strong>Learn:</strong> The reward updated its Q-Table to make better choices next time!</li>
-                      </ol>
-                 </div>
-                 ${levelUnlockedMessage} 
-                 <div class="modal-actions">
-                      <button class="button-primary" onclick="hideModal('game', () => showLevelIntro(activeLevel))">Play this Level Again</button>
-                      <button class="button-primary" onclick="returnToLevelSelect()">Choose Your Level</button>
-                      ${endGameButtonHtml}
-                 </div>`;
-            ui.gameModal.innerHTML = content;
+            return;
         }
         showModal('game');
     }
-    
-    // --- Added restartApp() and modified showFinalePage() ---
+
     function restartApp() {
         hideModal('game', () => {
-            gsap.to(ui.gameContainer, { 
-                autoAlpha: 0, 
-                duration: 0.3, 
-                onComplete: () => {
-                    ui.scoreHistoryBoard.classList.remove('visible');
-                    ui.openHistoryBtn.style.display = 'none';
-                }
-            });
-
-            localStorage.clear(); // Clears all localStorage for a full reset
-            loadAndResetState(); // Reloads all state variables to defaults
-            
-            updatePersistentHistoryBoard();
-
-            D.getElementById('first-name').value = '';
-            D.getElementById('last-initial').value = '';
+            gsap.to(ui.gameContainer, { autoAlpha: 0, duration: 0.3, onComplete: () => {
+                ui.ai.aiInfoBtn.style.display = 'none';
+            }});
+            localStorage.clear();
+            loadAndResetState();
+            hasDoneFirstTrainAndShoot = false;
+            attemptCount   = { 1: 0, 2: 0, 3: 0 };
+            bestHumanScore = { 1: -1, 2: -1, 3: -1 };
+            bestTrainCount = { 1: -1, 2: -1, 3: -1 };
+                D.getElementById('first-name').value = '';
+            D.getElementById('last-name').value = '';
             D.getElementById('age').value = '';
             D.getElementById('grade').value = '';
-            
             D.querySelector('.human-title').textContent = "You!";
-
             ui.playerInfoForm.style.display = 'block';
             gsap.set(ui.playerInfoForm, { autoAlpha: 1, height: 'auto' });
             ui.levelSelectionSection.style.display = 'none';
             gsap.set(ui.levelSelectionSection, { autoAlpha: 0 });
-            
             showModal('welcome');
         });
     }
 
-    function showFinalePage() {
-        let wins = 0;
-        let losses = 0;
-        let draws = 0;
-        
-        const persistentHistory = JSON.parse(localStorage.getItem('aiHoopsScoreHistory')) || [];
-        
-        persistentHistory.forEach(score => {
-            if (score.human > score.ai) { wins++; } 
-            else if (score.ai > score.human) { losses++; } 
-            else { draws++; }
-        });
+    function showLevelRecap() {
+        const firstName  = playerInfo.firstName || 'Coach';
+        const lvl        = activeLevel;
+        const human      = humanScore;
+        const ai         = aiScore;
 
-        const summaryHtml = `
-            <h3>Your Final Score Report (All Games)</h3>
-            <ul class="finale-summary">
-                <li class="summary-item"><h4>Total Games Played</h4><p>${persistentHistory.length}</p></li>
-                <li class="summary-item" style="border-color: var(--human-color);"><h4>Your Total Wins</h4><p style="color: var(--human-color);">${wins}</p></li>
-                <li class="summary-item" style="border-color: var(--ai-color);"><h4>Bot Total Wins</h4><p style="color: var(--ai-color);">${losses}</p></li>
-                <li class="summary-item"><h4>Total Draws</h4><p>${draws}</p></li>
-            </ul>
-        `;
+        // ── Dynamic headline + message based on result ──────────
+        let headline, message, headlineColor;
 
-        const content = `
-            <h1>🎉 Congratulations, Coach! 🎉</h1>
-            <p>You've completed all levels of the AI Hoops Academy. You're an amazing teacher!</p>
-            <div class="info-section" style="text-align: left;">${summaryHtml}</div>
-            <div class="info-section" style="text-align: left;">
-                <h2>Your AI Coaching Journey</h2>
-                <ol>
-                    <li><strong>Level 1:</strong> You taught the bot a basic <strong>(State, Action) -> Reward</strong> loop.</li>
-                    <li><strong>Level 2:</strong> You introduced more <strong>States</strong> (different positions). The bot's brain (Q-Table) grew.</li>
-                    <li><strong>Level 3:</strong> You added a dynamic <strong>State</strong> (the moving blocker). The bot learned to time its shots.</li>
-                </ol>
-                <p style="text-align: center; margin-top: 1.5rem; color: var(--primary-text); font-weight: 600;">You've successfully trained a Reinforcement Learning agent. Great job! 🤖🏆</p>
-            </div>
+        if (human > ai) {
+            headlineColor = CONFIG.COLORS.HUMAN;
+            if (human === 5) {
+                headline = `🏀 Perfect Round, ${firstName}!`;
+                message  = `5 out of 5 — you nailed every shot. The bot didn't stand a chance this time.`;
+            } else if (human >= 3) {
+                headline = `🥳 You Win, ${firstName}!`;
+                message  = `${human}–${ai} — solid shooting. You found the scoring combo before the bot figured it out.`;
+            } else {
+                headline = `✅ You Edge It, ${firstName}!`;
+                message  = `${human}–${ai} — a close one, but a win is a win! A little more training and the bot will give you a tougher fight.`;
+            }
+        } else if (ai > human) {
+            headlineColor = CONFIG.COLORS.AI;
+            if (human === 0) {
+                headline = `🤖 Bot Wins This Round!`;
+                message  = `${human}–${ai} — the bot was well-trained this time. Try training it less and see if you can outscore it!`;
+            } else {
+                headline = `🤖 Bot Wins, ${firstName}!`;
+                message  = `${human}–${ai} — remember, you built that bot. It only got good because you trained it. Next time train it a bit less, or adjust your shots earlier!`;
+            }
+        } else {
+            headlineColor = CONFIG.COLORS.ACCENT;
+            headline = `🤝 It's a Draw, ${firstName}!`;
+            message  = `${human}–${ai} — you and the bot are perfectly matched right now. Try training it more (or less) to tip the balance.`;
+        }
+
+        // ── Score tiles ─────────────────────────────────────────
+        const scoreTiles = `
+            <ul class="finale-summary" style="margin:1rem 0;">
+                <li class="summary-item" style="border-color:var(--human-color);">
+                    <h4 style="color:var(--human-color)">You</h4>
+                    <p style="font-size:2rem;color:var(--human-color)">${human}</p>
+                </li>
+                <li class="summary-item" style="border-color:var(--ai-color);">
+                    <h4 style="color:var(--ai-color)">HoopsBot</h4>
+                    <p style="font-size:2rem;color:var(--ai-color)">${ai}</p>
+                </li>
+                <li class="summary-item">
+                    <h4>Trained</h4>
+                    <p style="font-size:1.2rem;">${cumulativeShotsTrained.toLocaleString()}</p>
+                </li>
+            </ul>`;
+
+        ui.gameModal.innerHTML = `
+            <h1 style="color:${headlineColor}; text-shadow: 0 0 15px ${headlineColor}; font-size:clamp(1.4rem,4vw,2.2rem);">${headline}</h1>
+            <p style="font-size:1rem;color:var(--bright-text);margin-bottom:0;">${message}</p>
+            ${scoreTiles}
             <div class="modal-actions">
-                 <button class="button-primary" onclick="restartApp()">End Game & Start Over</button>
+                <button class="button-primary" onclick="returnToLevelSelect()">Select a Level</button>
             </div>`;
-        ui.gameModal.innerHTML = content;
-        gsap.fromTo(ui.gameModal, {autoAlpha: 0, scale: 0.9}, {autoAlpha: 1, scale: 1, duration: 0.4, ease: 'back.out(1.7)'});
+        showModal('game');
     }
 
+    function showFinalePage() {
+        const persistentHistory = JSON.parse(localStorage.getItem('aiHoopsScoreHistory')) || [];
+
+        // ── Pick one canonical attempt per level ───────────────
+        // Use first attempt (attempt_number === 1) as the research-valid
+        // measure. Fall back to the earliest entry if metadata is missing
+        // (backwards compatibility with pre-metadata saves).
+        const canonical = {};
+        [1, 2, 3].forEach(lvl => {
+            const forLevel = persistentHistory.filter(s => s.level === lvl);
+            if (forLevel.length === 0) return;
+            // Prefer explicit first attempt flag; fall back to array order
+            canonical[lvl] = forLevel.find(s => s.is_first_attempt === true) || forLevel[0];
+        });
+
+        const played  = Object.values(canonical);
+        const wins    = played.filter(s => s.human > s.ai).length;
+        const losses  = played.filter(s => s.ai > s.human).length;
+        const draws   = played.filter(s => s.human === s.ai).length;
+        const replays = persistentHistory.length - played.length; // attempts beyond first
+
+        // ── Per-level summary rows ─────────────────────────────
+        const levelLabels = { 1: '🎯 Level 1', 2: '📖 Level 2', 3: '📚 Level 3' };
+        const levelRows = [1, 2, 3].map(lvl => {
+            const s = canonical[lvl];
+            if (!s) return `<li class="summary-item"><h4>${levelLabels[lvl]}</h4><p style="color:var(--secondary-text)">Not played</p></li>`;
+            const winner = s.human > s.ai ? '🏆 You' : s.ai > s.human ? '🤖 Bot' : '🤝 Draw';
+            const extra  = (persistentHistory.filter(h => h.level === lvl).length > 1)
+                ? `<span style="font-size:0.75rem;color:var(--secondary-text)"> (replayed ${persistentHistory.filter(h => h.level === lvl).length - 1}×)</span>`
+                : '';
+            return `<li class="summary-item">
+                <h4>${levelLabels[lvl]}${extra}</h4>
+                <p><span style="color:var(--human-color)">${s.human}</span> – <span style="color:var(--ai-color)">${s.ai}</span> &nbsp;${winner}</p>
+            </li>`;
+        }).join('');
+
+        const summaryHtml = `
+            <h3>Your Final Score Report <span style="font-size:0.75rem;font-family:'Poppins',sans-serif;font-weight:400;color:var(--secondary-text)">(first attempt per level)</span></h3>
+            <ul class="finale-summary">
+                ${levelRows}
+            </ul>
+            <ul class="finale-summary" style="margin-top:1rem;">
+                <li class="summary-item" style="border-color:var(--human-color);"><h4>Your Wins</h4><p style="color:var(--human-color);">${wins}</p></li>
+                <li class="summary-item" style="border-color:var(--ai-color);"><h4>Bot Wins</h4><p style="color:var(--ai-color);">${losses}</p></li>
+                <li class="summary-item"><h4>Draws</h4><p>${draws}</p></li>
+                ${replays > 0 ? `<li class="summary-item"><h4>Replays</h4><p style="color:var(--secondary-text)">${replays}</p></li>` : ''}
+            </ul>`;
+
+        const firstName = playerInfo.firstName || 'Coach';
+
+        // ── Dynamic headline and reflection based on outcome ───
+        let headline, opener, reflection;
+
+        if (wins === 3) {
+            headline = `🏆 Hat-trick, ${firstName}!`;
+            opener   = `You beat HoopsBot on every single level. Amazing shooting AND amazing coaching!`;
+            reflection = `Winning all three levels means you consistently found the right angle and power combos before the bot had enough training to catch up. That's real skill — you were reading the court better than the algorithm. Pretty cool to beat a computer at its own game!`;
+        } else if (wins === 2) {
+            headline = `🥳 Great Game, ${firstName}!`;
+            opener   = `Two wins out of three — you came out ahead overall. Nicely done!`;
+            reflection = `Winning two levels shows you're good at finding the scoring zone quickly. On the level the bot won, it probably had just enough training to nail the best angle-power combo. That's Q-Learning doing its job — the more it practices, the sharper it gets.`;
+        } else if (wins === 1) {
+            headline = `⚔️ Competitive Game, ${firstName}!`;
+            opener   = `One win each way — you and HoopsBot pushed each other hard.`;
+            reflection = `On the levels the bot won, it had trained enough to find good shots consistently. On the level you won, your instincts were sharper. Try training the bot more before pressing SHOOT — watch the Q-Table fill up green and see if it can catch you.`;
+        } else if (wins === 0 && losses === 3) {
+            headline = `🤖 The Bot Won This One, ${firstName}!`;
+            opener   = `HoopsBot outscored you on every level. But here's the twist — <em>you</em> trained it.`;
+            reflection = `The bot only got better because you gave it practice time. That's the whole point of Q-Learning: more experience = better decisions. You built something that could beat you. That's actually impressive — try training it less next time and see if you can win!`;
+        } else if (draws === 3) {
+            headline = `🤝 Dead Even, ${firstName}!`;
+            opener   = `Every level ended in a draw. You and HoopsBot are perfectly matched!`;
+            reflection = `Draws across all three levels means your shooting accuracy matched the bot's trained policy almost exactly. Try training the bot more — or less — and see if you can break the tie either way.`;
+        } else {
+            headline = `🎉 All Three Levels Done, ${firstName}!`;
+            opener   = `${wins > losses ? `You came out ahead — great job!` : wins === losses ? `A tight match all the way through!` : `The bot had a strong run, but you coached it well!`}`;
+            reflection = `Each level added a new dimension to what the bot had to learn — position in Level 2, timing in Level 3. The bigger the state space, the more training it needs to fill in all those Q-Table pages.`;
+        }
+
+        ui.gameModal.innerHTML = `
+            <h1>${headline}</h1>
+            <p>${opener}</p>
+            <div class="info-section" style="text-align: left;">${summaryHtml}</div>
+            <div class="info-section" style="text-align: left;">
+                <h2>What You Built 🧠</h2>
+                <p>${reflection}</p>
+                <ol style="margin-top:0.75rem;">
+                    <li><strong>Level 1:</strong> One fixed state → one Q-Table page. Simple but it works.</li>
+                    <li><strong>Level 2:</strong> Ball moves → one page per position. The brain grew into a flipbook.</li>
+                    <li><strong>Level 3:</strong> Blocker added → the brain became a whole library. Each state needed its own policy.</li>
+                </ol>
+                <p style="text-align:center; margin-top:1.25rem; color:var(--accent-color); font-weight:600;">
+                    You trained a Reinforcement Learning agent from scratch. That's real AI. 🤖🏆
+                </p>
+            </div>
+            <div class="modal-actions">
+                <button class="button-primary" onclick="returnToLevelSelect()">Select a Level</button>
+                <button class="button-primary" onclick="restartApp()">End Game</button>
+            </div>`;
+        showModal('game');
+    }
+
+    // ─────────────────────────────────────────────
+    // Modal helpers
+    // ─────────────────────────────────────────────
     function showModal(type, onComplete) {
-        const overlay = (type === 'welcome') ? ui.welcomeOverlay : ui.gameModalOverlay;
-        const modal = (type === 'welcome') ? D.querySelector('#welcome-modal') : ui.gameModal;
+        const overlay = type === 'welcome' ? ui.welcomeOverlay : ui.gameModalOverlay;
+        const modal   = type === 'welcome' ? D.querySelector('#welcome-modal') : ui.gameModal;
         overlay.style.visibility = 'visible';
         gsap.to(overlay, { autoAlpha: 1, duration: 0.3 });
         gsap.fromTo(modal, { autoAlpha: 0, scale: 0.8, y: -50 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.5, ease: 'back.out(1.7)', delay: 0.1, onComplete });
     }
-
     function hideModal(type, onComplete) {
         const overlay = type === 'welcome' ? ui.welcomeOverlay : ui.gameModalOverlay;
-        const modal = type === 'welcome' ? D.querySelector('#welcome-modal') : ui.gameModal;
-        if (modal.scrollTop > 0) {
-            modal.scrollTop = 0;
-        }
+        const modal   = type === 'welcome' ? D.querySelector('#welcome-modal') : ui.gameModal;
+        if (modal.scrollTop > 0) modal.scrollTop = 0;
         gsap.to(modal, { autoAlpha: 0, scale: 0.8, y: 50, duration: 0.3, ease: 'power2.in' });
-        gsap.to(overlay, { 
-            autoAlpha: 0, 
-            duration: 0.4, 
-            delay: 0.1, 
-            onComplete: () => {
-                overlay.style.visibility = 'hidden';
-                if (onComplete) { onComplete(); }
-            } 
-        });
+        gsap.to(overlay, { autoAlpha: 0, duration: 0.4, delay: 0.1, onComplete: () => { overlay.style.visibility = 'hidden'; if (onComplete) onComplete(); } });
+    }
+    // ── Info modal card state ─────────────────────────────────
+    let infoCardIndex    = 0;          // current card (0-based)
+    const INFO_CARD_COUNT = 5;
+    let infoCardTimers   = [];         // ms spent on each card
+    let infoCardStart    = null;       // when current card was shown
+
+    function _buildInfoDots() {
+        const dotsEl = D.getElementById('info-card-dots');
+        if (!dotsEl) return;
+        dotsEl.innerHTML = '';
+        for (let i = 0; i < INFO_CARD_COUNT; i++) {
+            const dot = D.createElement('div');
+            dot.className = 'info-dot' + (i === infoCardIndex ? ' active' : (i < infoCardIndex ? ' visited' : ''));
+            dot.onclick = () => _goToInfoCard(i);
+            dotsEl.appendChild(dot);
+        }
     }
 
-    // --- MODIFICATION 3: Added checkmark logic ---
-    function updateLevelSelectionUI() {
-        ui.levelSelectBtns.forEach(btn => {
-            const level = parseInt(btn.dataset.level);
-            const statusDiv = btn.querySelector('.level-status');
-            
-            btn.classList.remove('locked');
-            statusDiv.innerHTML = '';
+    function _goToInfoCard(idx, goingBack = false) {
+        // Record time on current card
+        if (infoCardStart !== null) {
+            infoCardTimers[infoCardIndex] = (infoCardTimers[infoCardIndex] || 0) + (Date.now() - infoCardStart);
+        }
+        infoCardIndex = Math.max(0, Math.min(INFO_CARD_COUNT - 1, idx));
+        infoCardStart = Date.now();
 
-            if (level > unlockedLevel) {
-                btn.classList.add('locked');
-                statusDiv.innerHTML = `<svg class="icon-lock"><use href="#icon-lock"/></svg> Locked`;
-            } else if (completedLevels.includes(level)) {
-                statusDiv.innerHTML = `<svg class="icon-check"><use href="#icon-check"/></svg> Completed`;
+        // Update cards
+        D.querySelectorAll('.info-card').forEach((c, i) => {
+            c.classList.remove('active', 'go-back');
+            if (i === infoCardIndex) {
+                c.classList.add('active');
+                if (goingBack) c.classList.add('go-back');
             }
         });
+
+        // Update dots
+        _buildInfoDots();
+
+        // Update nav buttons
+        const prev = D.getElementById('info-prev-btn');
+        const next = D.getElementById('info-next-btn');
+        const counter = D.getElementById('info-card-counter');
+        if (prev) prev.disabled = infoCardIndex === 0;
+        if (next) {
+            next.textContent = infoCardIndex === INFO_CARD_COUNT - 1 ? 'Got it! ✓' : 'Next →';
+        }
+        if (counter) counter.textContent = `${infoCardIndex + 1} / ${INFO_CARD_COUNT}`;
     }
 
+    function showInfoModal(level) {
+        if (ui.infoModalOverlay.style.visibility === 'visible') return;
+        infoModalOpenCount++;
+        infoModalTimer = Date.now();
+
+        // Reset card state
+        infoCardIndex  = 0;
+        infoCardTimers = new Array(INFO_CARD_COUNT).fill(0);
+        infoCardStart  = Date.now();
+
+        const el = ui.infoModalContent;
+        el.classList.remove('show-level-1', 'show-level-2', 'show-level-3');
+        el.classList.add(`show-level-${level}`);
+
+        _buildInfoDots();
+        _goToInfoCard(0);
+
+        // Wire up nav buttons (remove old listeners by replacing elements)
+        const prevBtn = D.getElementById('info-prev-btn');
+        const nextBtn = D.getElementById('info-next-btn');
+        const newPrev = prevBtn.cloneNode(true);
+        const newNext = nextBtn.cloneNode(true);
+        prevBtn.parentNode.replaceChild(newPrev, prevBtn);
+        nextBtn.parentNode.replaceChild(newNext, nextBtn);
+        newPrev.addEventListener('click', () => _goToInfoCard(infoCardIndex - 1, true));
+        newNext.addEventListener('click', () => {
+            if (infoCardIndex === INFO_CARD_COUNT - 1) { hideInfoModal(); }
+            else { _goToInfoCard(infoCardIndex + 1); }
+        });
+
+        ui.infoModalOverlay.style.visibility = 'visible';
+        gsap.to(ui.infoModalOverlay, { autoAlpha: 1, duration: 0.3 });
+        gsap.fromTo(ui.infoModalContent, { autoAlpha: 0, scale: 0.8, y: -50 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.5, ease: 'back.out(1.7)', delay: 0.1 });
+    }
+
+    function hideInfoModal() {
+        // Record time on current card before closing
+        if (infoCardStart !== null) {
+            infoCardTimers[infoCardIndex] = (infoCardTimers[infoCardIndex] || 0) + (Date.now() - infoCardStart);
+            infoCardStart = null;
+        }
+        const totalMs = infoModalTimer ? Date.now() - infoModalTimer : null;
+
+        if (infoModalTimer && currentUserId) {
+            fsWrite('info_modal_views', {
+                ..._levelCtx(),
+                open_count:               infoModalOpenCount,
+                total_duration_ms:        totalMs,
+                last_card_seen:           infoCardIndex + 1,
+                cards_reached:            infoCardIndex + 1,
+                completed:                infoCardIndex === INFO_CARD_COUNT - 1,
+                before_first_train:       !hasDoneFirstTrainAndShoot,
+                cumulative_shots_trained: cumulativeShotsTrained,
+                // Per-card time in ms: card_1_ms, card_2_ms ... card_5_ms
+                ...Object.fromEntries(infoCardTimers.map((t, i) => [`card_${i+1}_ms`, t])),
+                timestamp:                new Date().toISOString(),
+            });
+        }
+        infoModalTimer = null;
+
+        const overlay = ui.infoModalOverlay, modal = ui.infoModalContent;
+        gsap.to(modal, { autoAlpha: 0, scale: 0.8, y: 50, duration: 0.3, ease: 'power2.in' });
+        gsap.to(overlay, { autoAlpha: 0, duration: 0.4, delay: 0.1, onComplete: () => { overlay.style.visibility = 'hidden'; } });
+    }
+    function updateLevelSelectionUI() {
+        const justUnlocked = parseInt(localStorage.getItem('aiHoopsJustUnlocked')) || 0;
+        ui.levelSelectBtns.forEach(btn => {
+            const level     = parseInt(btn.dataset.level);
+            const statusDiv = btn.querySelector('.level-status');
+            btn.classList.remove('locked');
+            statusDiv.innerHTML = '';
+            if (level > unlockedLevel)              { btn.classList.add('locked'); statusDiv.innerHTML = `<svg class="icon-lock"><use href="#icon-lock"/></svg> Locked`; }
+            else if (level === justUnlocked)        { statusDiv.innerHTML = `<svg class="icon-unlock"><use href="#icon-unlock"/></svg> Unlocked!`; }
+            else if (completedLevels.includes(level)) { statusDiv.innerHTML = `<svg class="icon-check"><use href="#icon-check"/></svg> Completed`; }
+        });
+    }
     function returnToLevelSelect() {
         hideModal('game', () => {
-            gsap.to(ui.gameContainer, { 
-                autoAlpha: 0, 
-                duration: 0.3, 
-                onComplete: () => {
-                    ui.scoreHistoryBoard.classList.remove('visible');
-                    ui.openHistoryBtn.style.display = 'none';
-                }
-            });
+            gsap.to(ui.gameContainer, { autoAlpha: 0, duration: 0.3, onComplete: () => {
+                ui.ai.aiInfoBtn.style.display = 'none';
+            }});
             ui.playerInfoForm.style.display = 'none';
             ui.levelSelectionSection.style.display = 'block';
             gsap.set(ui.levelSelectionSection, { autoAlpha: 1 });
@@ -926,48 +2008,36 @@
         });
     }
 
+    // ─────────────────────────────────────────────
+    // Score display
+    // ─────────────────────────────────────────────
     function updateScore(player, newScore) {
-        const scoreEl = ui[player + 'Score'];
-        if (newScore === 0 && parseInt(scoreEl.textContent) !== 0) { scoreEl.textContent = 0; return; }
-        gsap.to(scoreEl, {
-            scale: 1.5, duration: 0.2, ease: 'power2.out',
-            onComplete: () => {
-                scoreEl.textContent = newScore;
-                gsap.to(scoreEl, { scale: 1, duration: 0.4, ease: 'elastic.out(1, 0.5)' });
-            }
-        });
+        const el = ui[player + 'Score'];
+        if (newScore === 0 && parseInt(el.textContent) !== 0) { el.textContent = 0; return; }
+        gsap.to(el, { scale: 1.5, duration: 0.2, ease: 'power2.out', onComplete: () => {
+            el.textContent = newScore;
+            gsap.to(el, { scale: 1, duration: 0.4, ease: 'elastic.out(1, 0.5)' });
+        }});
     }
-    
-    function updatePersistentHistoryBoard() {
-        const list = D.getElementById('persistent-history-list');
-        const persistentHistory = JSON.parse(localStorage.getItem('aiHoopsScoreHistory')) || [];
-        list.innerHTML = '';
-        if (persistentHistory.length === 0) { list.innerHTML = '<li>No games completed.</li>'; return; }
-        
-        persistentHistory.slice().reverse().forEach(score => {
-            const li = D.createElement('li');
-            const playerName = playerInfo.firstName || 'You'; 
-            const winner = score.human > score.ai ? playerName : (score.ai > score.human ? 'Bot' : 'Draw');
-            li.innerHTML = `Lvl ${score.level}: <strong>${score.human}</strong> (${playerName}) - <strong>${score.ai}</strong> (Bot) <br> Winner: ${winner}`;
-            list.appendChild(li);
-        });
+    function showShotFeedback(player, text, color) {
+        const el = ui[player].shotFeedback;
+        el.textContent = text; el.style.color = color;
+        gsap.fromTo(el, { autoAlpha: 0, scale: 0.5, y: 20 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.7)' });
+        gsap.to(el, { autoAlpha: 0, scale: 0.8, y: -20, delay: 1.2, duration: 0.5, ease: 'power2.in' });
     }
 
-    function showShotFeedback(player, text, color) {
-        const feedbackEl = ui[player].shotFeedback;
-        feedbackEl.textContent = text;
-        feedbackEl.style.color = color;
-        gsap.fromTo(feedbackEl, { autoAlpha: 0, scale: 0.5, y: 20 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.7)' });
-        gsap.to(feedbackEl, { autoAlpha: 0, scale: 0.8, y: -20, delay: 1.2, duration: 0.5, ease: 'power2.in' });
-    }
-    
-    // --- Restored static tip logic ---
+    // ─────────────────────────────────────────────
+    // Game-state machine
+    // ─────────────────────────────────────────────
     function updateGameState(newState) {
         gameState = newState;
         ui.human.card.classList.remove('active-turn', 'inactive-turn');
         ui.ai.card.classList.remove('active-turn', 'inactive-turn');
         ui.human.card.classList.add('inactive-turn');
         ui.ai.card.classList.add('inactive-turn');
+        ui.ai.aiInfoBtn.classList.remove('pulse-highlight');
+        clearQValueLabel();
+        clearCellHighlight();
 
         switch (newState) {
             case 'HUMAN_TURN':
@@ -975,34 +2045,48 @@
                 basketballState.shotsLeft = CONFIG.SHOTS_PER_ROUND;
                 basketballState.prepareTurn('human');
                 ui.human.shootBtn.disabled = false;
-                ui.ai.shootBtn.disabled = true;
-                ui.statusText.textContent = `Your turn! You have ${basketballState.shotsLeft} shots left.`;
-                
-                let tip = "";
-                if (activeLevel === 1) {
-                    tip = "<strong>Coach's Tip:</strong> Try to find the one perfect shot! After you miss, think about what you need to change: more/less power, or a higher/lower angle?";
-                } else if (activeLevel === 2) {
-                    tip = "<strong>Coach's Tip:</strong> The ball is in a new spot! Use what you learned from past shots, but adjust for the new position.";
-                } else {
-                    tip = "<strong>Coach's Tip:</strong> Watch that blocker! You'll need to time your shot perfectly to get it over.";
-                }
-                ui.human.coachTip.innerHTML = tip;
-                
+                ui.ai.shootBtn.disabled    = true;
+                ui.statusText.textContent  = `Your turn! You have ${basketballState.shotsLeft} shots left.`;
+                ui.human.coachTip.innerHTML =
+                    activeLevel === 1 ? "Try to find the one perfect shot! Think about what you need: more/less power, or a higher/lower angle?"
+                  : activeLevel === 2 ? "The <strong>ball</strong> is changing location for each shot! Use what you learned, but adjust for each new position."
+                  :                    "Watch the new position and that <strong>jumping blocker</strong>! You'll need to <strong>time your shot</strong> to get over it.";
+                // Clear shot log for new round and draw initial arc preview
                 break;
+
             case 'AI_SETUP':
                 basketballState.shotsLeft = CONFIG.SHOTS_PER_ROUND;
                 ui.ai.card.classList.add('active-turn');
-                basketballState.prepareTurn('ai'); 
+                basketballState.prepareTurn('ai');
                 ui.statusText.textContent = "Time to train the HoopsBot!";
-                ui.ai.coachTip.innerHTML = `<strong>My turn to learn!</strong> Use the train buttons, then click my Shoot button to start.`;
-                ui.human.shootBtn.disabled = true;
-                ui.ai.shootBtn.disabled = false;
+                ui.ai.coachTip.innerHTML  =
+                    !hasDoneFirstTrainAndShoot
+                        ? `My turn to learn! Click <strong>'Train 10'</strong> to watch me practice shot by shot, or <strong>'Train 100'</strong> to fill the grid fast. Then hit <strong>'SHOOT!'</strong>!`
+                    : activeLevel === 2
+                        ? `Watch the state strip! My position changes each shot — the Q-Table flips to that page. Same action, different position = different result!`
+                    : activeLevel === 3
+                        ? `Ball AND blocker move! 🤯 The blocker keeps moving <em>during</em> the shot, so the same action doesn't always work — I'm learning the <strong>best shot on average</strong>. Needs more training!`
+                    :   `Ready for more! Try <strong>Train 10</strong> to see each update, or <strong>Train 100+</strong> to boost fast. Then <strong>'SHOOT!'</strong>!`;
+                ui.human.shootBtn.disabled  = true;
+                ui.ai.shootBtn.disabled     = false;
+                ui.ai.aiInfoBtn.style.display = 'inline-block';
+
+                if (!hasPulsedInfoButton) {
+                    ui.ai.aiInfoBtn.classList.add('pulse-highlight');
+                    ui.ai.aiInfoBtn.addEventListener('animationend', () => {
+                        ui.ai.aiInfoBtn.classList.remove('pulse-highlight');
+                        hasPulsedInfoButton = true;
+                        localStorage.setItem('aiHoopsInfoPulsed', 'true');
+                    }, { once: true });
+                }
                 break;
+
             case 'AI_TURN':
                 ui.ai.card.classList.add('active-turn');
                 ui.human.shootBtn.disabled = true;
-                ui.ai.shootBtn.disabled = false;
+                ui.ai.shootBtn.disabled    = false;
                 break;
+
             case 'GAME_OVER':
                 ui.statusText.textContent = "Game Over!";
                 showRecapModal('ai_gameover');
@@ -1010,70 +2094,616 @@
         }
     }
 
+    // ═══════════════════════════════════════════════════════════
+    //  BASKETBALL STATE  –  core Q-learning engine
+    // ═══════════════════════════════════════════════════════════
     basketballState = {
-        level:1, qTable:[], shotsLeft:0, pos:{x:30, y:300-15}, blocker:{x:225, y:150, w:10, h:50, vy:1.5},
-        qConfig:{angles:10, powers:10, positions:10, blockerPos:5},
-        init(level){this.level=level;const c=this.qConfig;if(level===1)this.qTable=Array(c.powers).fill(0).map(()=>Array(c.angles).fill(0));if(level===2)this.qTable=Array(c.positions).fill(0).map(()=>Array(c.powers).fill(0).map(()=>Array(c.angles).fill(0)));if(level===3)this.qTable=Array(c.positions).fill(0).map(()=>Array(c.blockerPos).fill(0).map(()=>Array(c.powers).fill(0).map(()=>Array(c.angles).fill(0))));this.updateVisuals();},
-        prepareTurn(player){
-            if(this.level>1)this.pos.x=30+Math.random()*170;else this.pos.x=30;
-            if(this.level===3){this.blocker.y=150+Math.random()*100;this.blocker.vy=(Math.random()>0.5?1:-1)*(1+Math.random());}
-            drawCourt(player,this.pos.x,this.level===3?this.blocker:null);this.updateVisuals();
+        level: 1,
+        qTable: [],
+        shotsLeft: 0,
+        pos: { x: 30, y: 300 - 15 },
+        blocker: { x: 225, y: 150, w: 10, h: 50, vy: 1.5 },
+        qConfig: { angles: 10, powers: 10, positions: 10, blockerPos: 8 },
+
+        // ── ε (epsilon) for ε-greedy exploration ──────────────
+        epsilon: CONFIG.RL.EPSILON_START,
+
+        // ── Initialize Q-table and reset epsilon ───────────────
+        init(level) {
+            this.level   = level;
+            this.epsilon = CONFIG.RL.EPSILON_START; // reset exploration each level
+            const c = this.qConfig;
+            if (level === 1) this.qTable = Array(c.powers).fill(0).map(() => Array(c.angles).fill(0));
+            if (level === 2) this.qTable = Array(c.positions).fill(0).map(() => Array(c.powers).fill(0).map(() => Array(c.angles).fill(0)));
+            if (level === 3) this.qTable = Array(c.positions).fill(0).map(() => Array(c.blockerPos).fill(0).map(() => Array(c.powers).fill(0).map(() => Array(c.angles).fill(0))));
+            this.updateVisuals();
         },
-        train(getFeedback=false,chosenAction=null){const c=this.qConfig;let angleIdx,powerIdx;if(chosenAction){powerIdx=chosenAction.powerIdx;angleIdx=chosenAction.angleIdx;}else{angleIdx=Math.floor(Math.random()*c.angles);powerIdx=Math.floor(Math.random()*c.powers);}
-        const angle=45+(angleIdx/(c.angles-1))*45,power=10+(powerIdx/(c.powers-1))*50;let stateIndices=[powerIdx,angleIdx];let simPos=30,simBlocker=null;
-        if(this.level>1){const posIdx=Math.floor(Math.random()*c.positions);simPos=30+(posIdx/(c.positions-1))*170;stateIndices.unshift(posIdx);}
-        if(this.level===3){const blockerIdx=Math.floor(Math.random()*c.blockerPos);
-            simBlocker={x:this.blocker.x,w:this.blocker.w,h:this.blocker.h,y:150+(blockerIdx/(c.blockerPos-1))*100,vy:(Math.random()>0.5?1:-1)*(1+Math.random())};
-            stateIndices.splice(1,0,blockerIdx);
-        }
-        const shotInfo=this.getShotReward(angle,power,simPos,simBlocker);const reward=shotInfo.reward;let qEntry=this.qTable;for(let i=0;i<stateIndices.length-1;i++)qEntry=qEntry[stateIndices[i]];const oldQ=qEntry[stateIndices[stateIndices.length-1]];qEntry[stateIndices[stateIndices.length-1]]+=0.1*(reward-oldQ);if(getFeedback)return{result:shotInfo.result};},
-        getShotReward(angle,power,startX,blocker){const{result,reason}=simulateShot(angle,power,startX,blocker);if(result==='basket')return{reward:10,result,reason};if(reason==='blocked')return{reward:-10,result,reason};return{reward:-1,result,reason};},
-        getStateSlices(){let stateSlices=this.qTable;const c=this.qConfig;
-            if(this.level>1){const posIdx=Math.min(c.positions-1,Math.max(0,Math.round(((this.pos.x-30)/170)*(c.positions-1))));stateSlices=this.qTable[posIdx];}
-            if(this.level===3){const blockerIdx=Math.min(c.blockerPos-1,Math.max(0,Math.round(((this.blocker.y-150)/100)*(c.blockerPos-1))));stateSlices=stateSlices[blockerIdx];}
-            return stateSlices;
+
+        // ── Prepare a new turn (randomise state if needed) ────
+        prepareTurn(player) {
+            // Both human and bot get a fresh random position each shot on level 2+.
+            // During the bot's playing round, aiAction pins _displayPos to the new
+            // position before each shot so the Q-table page follows along.
+            if (this.level > 1) this.pos.x = 30 + Math.random() * 170;
+            else                this.pos.x = 30;
+            if (this.level === 3) {
+                this.blocker.y  = 150 + Math.random() * 100;
+                this.blocker.vy = (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random());
+            }
+            drawCourt(player, this.pos.x, this.level === 3 ? this.blocker : null);
+            this.updateVisuals();
         },
-        getBestAction(){let best={q:-Infinity};const c=this.qConfig;const stateSlices=this.getStateSlices();stateSlices.forEach((row,pIndex)=>row.forEach((q,aIndex)=>{if(q>best.q)best={q,p:pIndex,a:aIndex};}));return{angle:45+((best.a||0)/(c.angles-1))*45,power:10+((best.p||0)/(c.powers-1))*50};},
-        updateVisuals(){let desc="";switch(this.level){case 1:desc="This is a simple <strong>Q-Table</strong>, a map of Angle vs. Power. Green squares are good shots the bot has learned!";break;case 2:desc="The <strong>Q-Table</strong> is now a flipbook! Each page is a map for a different <strong>ball position</strong>. We're seeing the page for the current spot.";break;case 3:desc="This <strong>Q-Table</strong> is huge! It's a flipbook where each page is for a unique combo of <strong>ball & blocker position</strong>. This is just one single page!";break;}
-        ui.ai.qTableDesc.innerHTML=desc;const stateSlices=this.getStateSlices();if(!stateSlices||!stateSlices[0])return;let maxQ=-Infinity,minQ=Infinity;stateSlices.forEach(r=>r.forEach(q=>{if(q>maxQ)maxQ=q;if(q<minQ)minQ=q;}));maxQ=Math.max(maxQ,0.1);minQ=Math.min(minQ,-0.1);ui.ai.qTableVisual.innerHTML='';for(let r=0;r<this.qConfig.powers;r++){for(let c=0;c<this.qConfig.angles;c++){const cell=D.createElement('div');cell.className='q-cell';const q=stateSlices[r][c];cell.style.backgroundColor=q>0?`rgba(0, 255, 209,${q/maxQ})`:`rgba(255, 113, 205,${Math.min(1,Math.abs(q/minQ))})`;ui.ai.qTableVisual.appendChild(cell);}}}
-    };
-    
-    const delay=ms=>new Promise(res=>setTimeout(res,ms));function drawCourt(player,startX,blocker){const canvas=D.getElementById(`${player}-canvas`),ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height,p=CONFIG.PHYSICS;ctx.clearRect(0,0,w,h);ctx.fillStyle=player==='human'?CONFIG.COLORS.HUMAN:CONFIG.COLORS.AI;ctx.beginPath();ctx.arc(startX,h-15,10,0,2*Math.PI);ctx.fill();ctx.strokeStyle=CONFIG.COLORS.SECONDARY;ctx.lineWidth=p.HOOP.rimThick;ctx.strokeRect(p.HOOP.x+10,p.HOOP.backboardY,5,p.HOOP.backboardH);ctx.strokeStyle=CONFIG.COLORS.ACCENT;ctx.beginPath();ctx.ellipse(p.HOOP.x,p.HOOP.y,p.HOOP_R,4,0,0,2*Math.PI);ctx.stroke();if(blocker){ctx.fillStyle=CONFIG.COLORS.SECONDARY;ctx.fillRect(blocker.x,blocker.y,blocker.w,blocker.h);}}
-    
-    function simulateShot(angle,power,startX,blockerState){const p=CONFIG.PHYSICS;let b={x:startX,y:300-15,vx:power*p.VEL_FACTOR*Math.cos(angle*Math.PI/180),vy:-power*p.VEL_FACTOR*Math.sin(angle*Math.PI/180)};let prevY = b.y; for(let t=0;t<250;t++){prevY = b.y; b.x+=b.vx;b.y+=b.vy;b.vy+=p.GRAVITY;
-        if (blockerState) {
-            blockerState.y += blockerState.vy;
-            if (blockerState.y < 150 || blockerState.y > 250) {
-                blockerState.vy *= -1;
+
+        // ─────────────────────────────────────────────────────
+        //  train()
+        //
+        //  Update rule: Q(s,a) ← Q(s,a) + α*(r − Q(s,a))
+        //  (bandit/terminal task — no γ, no next-state bootstrap)
+        //
+        //  State sampling during bulk training (chosenAction = null):
+        //    Both explore and exploit branches first pick a random
+        //    pos.x (and blocker.y on L3), then derive posIdx from
+        //    that position. This ensures the action chosen and the
+        //    Q-cell updated always belong to the SAME state.
+        //    (Previously exploit read a random slice then updated a
+        //    different random state — now fixed.)
+        //
+        //  ε decays after every training step.
+        // ─────────────────────────────────────────────────────
+        train(getFeedback = false, chosenAction = null, knownResult = null) {
+            const c          = this.qConfig;
+            const rl         = CONFIG.RL;
+
+            // ── Choose action indices ──────────────────────────
+            let angleIdx, powerIdx;
+            let angle, power;
+
+            if (chosenAction) {
+                // Explicit action provided (animated single-step path)
+                angleIdx = chosenAction.angleIdx;
+                powerIdx = chosenAction.powerIdx;
+                angle = 45 + (angleIdx / (c.angles - 1)) * 45;
+                power = 10 + (powerIdx / (c.powers - 1)) * 50;
+            } else {
+                // ── KEY FIX: sample CONTINUOUSLY, map to nearest bin ──
+                // Sampling only discrete bin centres means many bin combos
+                // never produce a basket (the scoring corridor is narrow
+                // and falls between grid points). Continuous sampling lets
+                // the physics find real scoring shots; we then credit the
+                // nearest bin so the Q-table learns correctly.
+                if (Math.random() < this.epsilon) {
+                    // Explore: random continuous angle & power, random state
+                    angle    = 45 + Math.random() * 45;
+                    power    = 10 + Math.random() * 50;
+                    // Also randomise position so explore covers the full state space
+                    if (this.level > 1) {
+                        const posIdx = Math.floor(Math.random() * c.positions);
+                        this.pos.x = 30 + (posIdx / (c.positions - 1)) * 170;
+                    }
+                    if (this.level === 3) {
+                        const blIdx = Math.floor(Math.random() * c.blockerPos);
+                        this.blocker.y = 150 + (blIdx / (c.blockerPos - 1)) * 100;
+                    }
+                } else {
+                    // Exploit: argmax Q(s,a) for the state about to be sampled.
+                    // Pick a random state first, set pos.x/blocker.y to it, then
+                    // read getStateSlices() so exploit is greedy for the SAME
+                    // state that will receive the Q update below.
+                    if (this.level > 1) {
+                        const posIdx = Math.floor(Math.random() * c.positions);
+                        this.pos.x = 30 + (posIdx / (c.positions - 1)) * 170;
+                    }
+                    if (this.level === 3) {
+                        const blIdx = Math.floor(Math.random() * c.blockerPos);
+                        this.blocker.y = 150 + (blIdx / (c.blockerPos - 1)) * 100;
+                    }
+                    const tempSlice = this.getStateSlices(); // current state, not random
+                    let best = { q: -Infinity, p: 0, a: 0 };
+                    if (Array.isArray(tempSlice)) {
+                        tempSlice.forEach((row, pi) => { if (Array.isArray(row)) row.forEach((q, ai) => { if (q > best.q) best = { q, p: pi, a: ai }; }); });
+                    }
+                    angle = 45 + (best.a / (c.angles - 1)) * 45;
+                    power = 10 + (best.p / (c.powers - 1)) * 50;
+                }
+                // Map continuous values to nearest bin index
+                angleIdx = Math.min(c.angles - 1, Math.max(0, Math.round((angle - 45) / 45 * (c.angles - 1))));
+                powerIdx = Math.min(c.powers - 1, Math.max(0, Math.round((power - 10) / 50 * (c.powers - 1))));
+            }
+
+            // ── Determine state indices ────────────────────────
+            // pos.x and blocker.y are already set correctly:
+            //   • chosenAction path  → uses current real state
+            //   • explore/exploit    → set randomly above, consistent with action chosen
+            let stateIndices = [powerIdx, angleIdx];
+            let simPos       = 30;
+            let simBlocker   = null;
+
+            if (this.level > 1) {
+                const posIdx = Math.min(c.positions - 1, Math.max(0, Math.round(((this.pos.x - 30) / 170) * (c.positions - 1))));
+                simPos = 30 + (posIdx / (c.positions - 1)) * 170;
+                stateIndices.unshift(posIdx);
+            }
+            if (this.level === 3) {
+                const blockerIdx = Math.min(c.blockerPos - 1, Math.max(0, Math.round(((this.blocker.y - 150) / 100) * (c.blockerPos - 1))));
+                // NOTE: blockerIdx is the blocker's START position, not where it is
+                // when the ball arrives. The blocker moves during animateShot(), so
+                // the same (posIdx, blockerIdx, action) can yield +1 or -1 depending
+                // on timing. This is intentional partial observability — the Q-table
+                // learns the best action *on average* across blocker phases, which
+                // converges but slowly. Accurately described as a stochastic environment.
+                simBlocker = {
+                    x: this.blocker.x, w: this.blocker.w, h: this.blocker.h,
+                    y: 150 + (blockerIdx / (c.blockerPos - 1)) * 100,
+                    vy: (Math.random() > 0.5 ? 1 : -1) * (1 + Math.random())
+                };
+                stateIndices.splice(1, 0, blockerIdx);
+            }
+
+            // ── Simulate shot & get reward ─────────────────────
+            const shotInfo = knownResult
+                ? { result: knownResult.result, reason: knownResult.reason, reward: knownResult.result === 'basket' ? 1 : -1 }
+                : this.getShotReward(angle, power, simPos, simBlocker);
+            const reward   = shotInfo.reward;
+
+            // ── Navigate to correct Q-table cell ──────────────
+            let qEntry = this.qTable;
+            for (let i = 0; i < stateIndices.length - 1; i++) {
+                if (!Array.isArray(qEntry) || qEntry[stateIndices[i]] === undefined) { console.error("Q-Table slice undefined", stateIndices, i); return { result: 'miss' }; }
+                qEntry = qEntry[stateIndices[i]];
+            }
+            const lastIdx = stateIndices[stateIndices.length - 1];
+            if (!Array.isArray(qEntry) || qEntry[lastIdx] === undefined) { console.error("Final Q cell invalid", stateIndices); return { result: 'miss' }; }
+
+            // ── BELLMAN UPDATE ─────────────────────────────────
+            // For a single-step (bandit / terminal) task:
+            //   Q(s,a) ← Q(s,a) + α * (reward + γ * 0 − Q(s,a))
+            //           = Q(s,a) + α * (reward − Q(s,a))
+            // γ * maxQ(s') = 0 because there is no meaningful "next state"
+            // (each shot is independent). This is correct & educationally
+            // honest — we label it "Q-Learning" because the update rule
+            // is identical to Q-Learning at terminal states.
+            const oldQ = qEntry[lastIdx];
+            const newQ = oldQ + rl.ALPHA * (reward - oldQ);
+            qEntry[lastIdx] = newQ;
+
+            // ── Track which page was trained so display shows it ──
+            if (this.level === 2) this._displayPos = stateIndices[0];
+            if (this.level === 3) { this._displayPos = stateIndices[0]; this._displayBl = stateIndices[1]; }
+
+            // ── Decay epsilon (exploration → exploitation) ─────
+            this.epsilon = Math.max(rl.EPSILON_END, this.epsilon * rl.EPSILON_DECAY);
+
+            if (getFeedback) return { result: shotInfo.result, angleIdx, powerIdx, oldQ, newQ };
+        },
+
+        getShotReward(angle, power, startX, blocker) {
+            const { result, reason } = simulateShot(angle, power, startX, blocker);
+            if (result === 'basket')     return { reward: 1,  result, reason };
+            
+            return                              { reward: -1,  result, reason };
+        },
+
+        // ── Navigate to the Q-slice for the CURRENT state ─────
+        getStateSlices() {
+            const c = this.qConfig;
+            let slices = this.qTable;
+            if (this.level > 1) {
+                const posIdx = Math.min(c.positions - 1, Math.max(0, Math.round(((this.pos.x - 30) / 170) * (c.positions - 1))));
+                slices = this.qTable[posIdx];
+            }
+            if (this.level === 3) {
+                const blockerIdx = Math.min(c.blockerPos - 1, Math.max(0, Math.round(((this.blocker.y - 150) / 100) * (c.blockerPos - 1))));
+                slices = slices && slices[blockerIdx];
+            }
+            if (!Array.isArray(slices) || slices.length === 0 || !Array.isArray(slices[0])) {
+                console.error("Invalid state slice:", slices);
+                return [];
+            }
+            return slices;
+        },
+
+        // ─────────────────────────────────────────────────────
+        //  FIXED: getBestAction()
+        //
+        //  Always returns argmax Q(s,a) — even when all values
+        //  are negative. Only falls back to a default when the
+        //  entire slice is exactly 0 (never been trained).
+        //  Also flags `allZero` so the UI can say "untrained".
+        // ─────────────────────────────────────────────────────
+        getBestAction(returnFullInfo = false) {
+            const c      = this.qConfig;
+            const slices = this.getStateSlices();
+
+            if (!slices || slices.length === 0) {
+                return returnFullInfo ? { angle: 65, power: 35, q: 0, allZero: true } : { angle: 65, power: 35 };
+            }
+
+            let best     = { q: -Infinity, p: -1, a: -1 };
+            let allZero  = true;
+
+            slices.forEach((row, pIndex) => {
+                if (Array.isArray(row)) {
+                    row.forEach((q, aIndex) => {
+                        if (q !== 0) allZero = false;
+                        if (q > best.q) best = { q, p: pIndex, a: aIndex };
+                    });
+                }
+            });
+
+            // If nothing was ever trained for this state, return default
+            if (allZero || best.p === -1) {
+                return returnFullInfo ? { angle: 65, power: 35, q: 0, allZero: true } : { angle: 65, power: 35 };
+            }
+
+            const bestAngle = 45 + (best.a / (c.angles - 1)) * 45;
+            const bestPower = 10 + (best.p / (c.powers - 1)) * 50;
+
+            return returnFullInfo
+                ? { angle: bestAngle, power: bestPower, q: best.q, allZero: false, pIdx: best.p, aIdx: best.a }
+                : { angle: bestAngle, power: bestPower };
+        },
+
+        // ── Get display slices: always show page posIdx=0, blockerIdx=0 ──
+        // Aggregating across all states doesn't work because untrained zeros
+        // (value=0) always overwrite trained negatives (value=-0.2 etc).
+        // Instead we show the first page, which is also the one trained by
+        // the animated path (pos.x=30 → posIdx=0).
+        getDisplaySlices() {
+            if (this.level === 1) return this.qTable;
+            const pos = this._displayPos !== undefined ? this._displayPos : 0;
+            if (this.level === 2) return this.qTable[pos];
+            const bl = this._displayBl !== undefined ? this._displayBl : 0;
+            return this.qTable[pos][bl];
+        },
+
+        // ── Render Q-table grid ────────────────────────────────
+        updateVisuals() {
+            const slices = this.getDisplaySlices();
+            const grid   = ui.ai.qTableVisual;
+            grid.innerHTML = '';
+
+            const pos = this._displayPos !== undefined ? this._displayPos : 0;
+            const bl  = this._displayBl  !== undefined ? this._displayBl  : 0;
+            const c   = this.qConfig;
+
+            // ── State strip ────────────────────────────────────
+            const stripContainer = D.getElementById('state-strip-container');
+            const stripTitle     = D.getElementById('state-strip-title');
+            const stripPos       = D.getElementById('state-strip-pos');
+            const stripBl        = D.getElementById('state-strip-bl');
+
+            if (this.level === 1) {
+                if (stripContainer) stripContainer.style.display = 'none';
+            } else {
+                if (stripContainer) stripContainer.style.display = 'flex';
+
+                // Position row (all levels > 1)
+                if (stripPos) {
+                    stripPos.innerHTML = '';
+                    for (let i = 0; i < c.positions; i++) {
+                        const sc = D.createElement('div');
+                        sc.className = 'state-cell' + (i === pos ? ' active' : '');
+                        sc.title = `Position ${i + 1}`;
+                        stripPos.appendChild(sc);
+                    }
+                }
+
+                // Blocker row (level 3 only)
+                if (this.level === 3) {
+                    if (stripBl) {
+                        stripBl.style.display = 'flex';
+                        stripBl.innerHTML = '';
+                        for (let i = 0; i < c.blockerPos; i++) {
+                            const sc = D.createElement('div');
+                            sc.className = 'state-cell' + (i === bl ? ' blocker-active' : '');
+                            sc.title = `Blocker position ${i + 1}`;
+                            stripBl.appendChild(sc);
+                        }
+                    }
+                    if (stripTitle) stripTitle.textContent = `pos ${pos + 1}/${c.positions}  ·  blocker ${bl + 1}/${c.blockerPos}`;
+                } else {
+                    if (stripBl) stripBl.style.display = 'none';
+                    if (stripTitle) stripTitle.textContent = `position ${pos + 1} of ${c.positions}`;
+                }
+            }
+
+            // ── Build empty grid if slices invalid ─────────────
+            if (!slices || slices.length === 0) {
+                for (let r = c.powers - 1; r >= 0; r--)
+                    for (let c2 = 0; c2 < c.angles; c2++) {
+                        const cell = D.createElement('div');
+                        cell.className = 'q-cell';
+                        cell.style.backgroundColor = 'var(--border-color)';
+                        grid.appendChild(cell);
+                    }
+                return;
+            }
+
+            // ── Find max Q+ and max |Q-| for normalisation ─────
+            let maxPos = 0.1, maxNeg = 0.1;
+            slices.forEach(row => { if (Array.isArray(row)) row.forEach(q => {
+                if (typeof q === 'number') {
+                    if (q > 0) maxPos = Math.max(maxPos, q);
+                    if (q < 0) maxNeg = Math.max(maxNeg, Math.abs(q));
+                }
+            }); });
+
+            // ── Render rows high-power-first so "Hi" is at top ─
+            for (let r = c.powers - 1; r >= 0; r--) {
+                for (let c2 = 0; c2 < c.angles; c2++) {
+                    const cell = D.createElement('div');
+                    cell.className = 'q-cell';
+                    const q = slices[r] && typeof slices[r][c2] === 'number' ? slices[r][c2] : 0;
+                    if (q === 0) {
+                        cell.style.backgroundColor = 'var(--border-color)';
+                    } else if (q > 0) {
+                        const norm  = Math.min(1, q / maxPos);
+                        const light = Math.round(75 - 40 * Math.pow(norm, 0.7));
+                        cell.style.backgroundColor = `hsl(160, 100%, ${light}%)`;
+                    } else {
+                        const norm  = Math.min(1, Math.abs(q) / maxNeg);
+                        const light = Math.round(75 - 40 * Math.pow(norm, 0.7));
+                        cell.style.backgroundColor = `hsl(320, 100%, ${light}%)`;
+                    }
+                    grid.appendChild(cell);
+                }
             }
         }
-        if(blockerState&&b.x>blockerState.x&&b.x<blockerState.x+blockerState.w&&b.y>blockerState.y&&b.y<blockerState.y+blockerState.h)return{result:'miss',reason:'blocked',missPoint:{x:b.x,y:b.y}};
-        
-        const isScoring = prevY < p.HOOP.y && b.y >= p.HOOP.y && Math.abs(b.x - p.HOOP.x) < p.HOOP_R && b.vy > 0;
-        if(isScoring)return{result:'basket',reason:null,missPoint:null};
-        
-        if (b.x > p.frontRimX && b.x < p.backRimX && (Math.abs(b.y - p.HOOP.y) < p.BALL_SIZE)) {
-             return{result:'miss',reason:'hit rim',missPoint:{x:b.x,y:b.y}};
+    };
+
+    // ─────────────────────────────────────────────────────────
+    //  Q-table cell highlight & decision bubble helpers
+    // ─────────────────────────────────────────────────────────
+
+    /** Flash a white outline + scale pop on the chosen Q-table cell */
+    function highlightChosenCell(pIdx, aIdx) {
+        const cells = ui.ai.qTableVisual.querySelectorAll('.q-cell');
+        const n      = basketballState.qConfig.angles;
+        const maxP   = basketballState.qConfig.powers;
+        // Rows are rendered high-power-first, so row 0 in the DOM = power index (maxP-1)
+        const displayRow = (maxP - 1) - pIdx;
+        const target = cells[displayRow * n + aIdx];
+        if (!target) return;
+        cells.forEach(c => c.classList.remove('chosen'));
+        void target.offsetWidth;
+        target.classList.add('chosen');
+    }
+
+    /** Remove the cell highlight */
+    function clearCellHighlight() {
+        ui.ai.qTableVisual.querySelectorAll('.q-cell.chosen')
+            .forEach(c => c.classList.remove('chosen'));
+    }
+
+    /** Show the Q-value as a tiny number inside the chosen cell */
+    function showQValueOnCell(pIdx, aIdx, q, allZero) {
+        clearQValueLabel();
+        if (allZero) return;
+        const cells = ui.ai.qTableVisual.querySelectorAll('.q-cell');
+        const n     = basketballState.qConfig.angles;
+        const maxP  = basketballState.qConfig.powers;
+        const displayRow = (maxP - 1) - pIdx;
+        const target = cells[displayRow * n + aIdx];
+        if (!target) return;
+        const label = D.createElement('span');
+        label.className = 'q-val-label';
+        label.textContent = (q >= 0 ? '+' : '') + q.toFixed(1);
+        target.appendChild(label);
+    }
+
+    /** Remove Q-value overlay label */
+    function clearQValueLabel() {
+        ui.ai.qTableVisual.querySelectorAll('.q-val-label')
+            .forEach(el => el.remove());
+    }
+
+    /** Float a delta number (oldQ → newQ) up from the chosen cell and fade out */
+    function floatQDelta(pIdx, aIdx, oldQ, newQ) {
+        const cells = ui.ai.qTableVisual.querySelectorAll('.q-cell');
+        const n     = basketballState.qConfig.angles;
+        const maxP  = basketballState.qConfig.powers;
+        const displayRow = (maxP - 1) - pIdx;
+        const target = cells[displayRow * n + aIdx];
+        if (!target) return;
+
+        const diff = newQ - oldQ;
+        if (Math.abs(diff) < 0.001) return;
+
+        const isGood = diff > 0;
+        const el = D.createElement('div');
+        el.className = `q-delta-float ${isGood ? 'good' : 'bad'}`;
+        el.textContent = `${(isGood ? '+' : '')}${diff.toFixed(2)}`;
+
+        // Position relative to the Q-table visual container
+        const grid   = ui.ai.qTableVisual;
+        const gRect  = grid.getBoundingClientRect();
+        const tRect  = target.getBoundingClientRect();
+        el.style.position  = 'fixed';
+        el.style.left      = (tRect.left + tRect.width / 2 - gRect.left + grid.offsetLeft - 10) + 'px';
+        el.style.top       = (tRect.top  - gRect.top  + grid.offsetTop  - 4) + 'px';
+        el.style.left      = (tRect.left + tRect.width / 2 - 10) + 'px';
+        el.style.top       = (tRect.top - 4) + 'px';
+
+        D.body.appendChild(el);
+        setTimeout(() => el.remove(), 1500);
+    }
+
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+
+    // ─────────────────────────────────────────────
+    // Firestore write helpers
+    //
+    // Hierarchy:
+    //   users/{userId}/                    — player identity doc
+    //     game_sessions/{auto-id}          — one per completed level attempt
+    //     shots/{auto-id}                  — one per individual shot
+    //     training_sessions/{auto-id}      — one per Train button press
+    //     info_modal_views/{auto-id}       — one per ? modal open/close
+    //
+    // Collection group queries (cross-user analysis):
+    //   db.collectionGroup('shots').where('level','==',2).get()
+    // ─────────────────────────────────────────────
+
+    function fsWrite(subcollection, data) {
+        if (!currentUserId || !db) {
+            console.warn(`fsWrite skipped (${subcollection}): no userId or db`);
+            return;
         }
-        if (b.x > p.backRimX && b.x < p.backRimX + 10 && b.y > p.backboardY && b.y < (p.backboardY + p.backboardH)) {
-             return{result:'miss',reason:'hit backboard',missPoint:{x:b.x,y:b.y}};
+        const path = `users/${currentUserId}/${subcollection}`;
+        try {
+            db.collection('users').doc(currentUserId)
+              .collection(subcollection).add(data)
+              .then(() => console.log(`✅ Saved to ${path}`))
+              .catch(e => console.warn(`❌ Write error (${path}):`, e.code, e.message));
+        } catch(e) { console.warn(`❌ fsWrite failed (${path}):`, e.message); }
+    }
+
+    // Minimal shared context — userId kept for collection group queries
+    // No need to repeat firstName etc since they live on the parent user doc
+    function _levelCtx() {
+        return {
+            userId:         currentUserId,   // kept for collectionGroup queries
+            level:          activeLevel,
+            attempt_number: attemptCount[activeLevel] || 1,
+        };
+    }
+
+    function saveShot(shooter, shotData) {
+        const c = basketballState.qConfig;
+        const posIdx = activeLevel > 1
+            ? Math.min(c.positions-1, Math.max(0, Math.round(((basketballState.pos.x-30)/170)*(c.positions-1))))
+            : null;
+        const blockerIdx = activeLevel === 3
+            ? Math.min(c.blockerPos-1, Math.max(0, Math.round(((basketballState.blocker.y-150)/100)*(c.blockerPos-1))))
+            : null;
+
+        // shot_number: attempt-wide ordinal — 1,2,3...N across all phases
+        //   sort by shot_number alone to get full chronological sequence
+        // shot_in_round: 1..5 within each human_round or bot_turn
+        // game_phase + human_round tells you which phase it belongs to
+        const game_phase = shooter === 'human' ? 'human_turn' : 'bot_turn';
+
+        fsWrite('shots', {
+            ..._levelCtx(),
+            ...shotData,              // caller fields first
+            shooter,
+            game_phase,
+            human_round:    shooter === 'human' ? humanRound : null,
+            shot_number:    ++globalShotSeq,   // attempt-wide ordinal — sort by this alone
+            shot_in_round:  shotData.shot_in_round,  // 1–5 within this phase
+            pos_x:          Math.round(basketballState.pos.x),
+            pos_idx:        posIdx,
+            blocker_idx:    blockerIdx,
+            timestamp:      new Date().toISOString(),
+        });
+    }
+
+    function saveGameSession(fields) {
+        fsWrite('game_sessions', {
+            ..._levelCtx(),
+            ...fields,
+            completedAt: new Date().toISOString(),
+        });
+    }
+
+    function saveTrainingSession(fields) {
+        fsWrite('training_sessions', {
+            ..._levelCtx(),
+            ...fields,
+            timestamp: new Date().toISOString(),
+        });
+    }
+
+    function drawCourt(player, startX, blocker) {
+        const canvas = ui[player].canvas;
+        const ctx = canvas.getContext('2d'), w = canvas.width, h = canvas.height, p = CONFIG.PHYSICS;
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = player === 'human' ? CONFIG.COLORS.HUMAN : CONFIG.COLORS.AI;
+        ctx.beginPath(); ctx.arc(startX, h - 15, 10, 0, 2 * Math.PI); ctx.fill();
+        ctx.strokeStyle = CONFIG.COLORS.SECONDARY; ctx.lineWidth = p.HOOP.rimThick;
+        ctx.strokeRect(p.HOOP.x + 10, p.HOOP.backboardY, 5, p.HOOP.backboardH);
+        ctx.strokeStyle = CONFIG.COLORS.ACCENT;
+        ctx.beginPath(); ctx.ellipse(p.HOOP.x, p.HOOP.y, p.HOOP_R, 8, 0, 0, 2 * Math.PI); ctx.stroke();
+        if (blocker) { ctx.fillStyle = CONFIG.COLORS.SECONDARY; ctx.fillRect(blocker.x, blocker.y, blocker.w, blocker.h); }
+    }
+
+    // ─────────────────────────────────────────────────────────
+    //  simulateShot  – deterministic physics (no canvas)
+    // ─────────────────────────────────────────────────────────
+    function simulateShot(angle, power, startX, blockerState) {
+        const p  = CONFIG.PHYSICS;
+        let b    = { x: startX, y: 300 - 15, vx: power * p.VEL_FACTOR * Math.cos(angle * Math.PI / 180), vy: -power * p.VEL_FACTOR * Math.sin(angle * Math.PI / 180) };
+        let prevY = b.y;
+        let currentBlocker = blockerState ? { ...blockerState } : null;
+
+        for (let t = 0; t < 250; t++) {
+            prevY = b.y;
+            b.x += b.vx; b.y += b.vy; b.vy += p.GRAVITY;
+
+            if (currentBlocker) {
+                currentBlocker.y += currentBlocker.vy;
+                if (currentBlocker.y < 150 || currentBlocker.y > 250) currentBlocker.vy *= -1;
+                if (b.x > currentBlocker.x && b.x < currentBlocker.x + currentBlocker.w &&
+                    b.y > currentBlocker.y && b.y < currentBlocker.y + currentBlocker.h)
+                    return { result: 'miss', reason: 'blocked', missPoint: { x: b.x, y: b.y } };
+            }
+
+            // Score: ball crosses hoop height from above, within rim radius, moving downward
+            if (prevY < p.HOOP.y && b.y >= p.HOOP.y && Math.abs(b.x - p.HOOP.x) < p.HOOP_R && b.vy > 0)
+                return { result: 'basket', reason: null, missPoint: null };
+
+            // Backboard: ball hits the board behind the hoop
+            if (b.x > p.HOOP.backRimX && b.x < p.HOOP.backRimX + 10 && b.y > p.HOOP.backboardY && b.y < p.HOOP.backboardY + p.HOOP.backboardH)
+                return { result: 'miss', reason: 'hit backboard', missPoint: { x: b.x, y: b.y } };
+
+            if (b.y > 300 || b.x > 400)
+                return { result: 'miss', reason: 'out of bounds', missPoint: { x: b.x, y: b.y } };
+        }
+        return { result: 'miss', reason: 'timeout', missPoint: { x: b.x, y: b.y } };
+    }
+
+    // ─────────────────────────────────────────────────────────
+    //  animateShot  – draws the ball trajectory on canvas
+    // ─────────────────────────────────────────────────────────
+    async function animateShot(angle, power, player, speed = 'normal') {
+        const canvas = ui[player].canvas;
+        const ctx    = canvas.getContext('2d'), p = CONFIG.PHYSICS;
+        let b        = { x: basketballState.pos.x, y: 300 - 15, vx: power * p.VEL_FACTOR * Math.cos(angle * Math.PI / 180), vy: -power * p.VEL_FACTOR * Math.sin(angle * Math.PI / 180) };
+
+        let simBlocker  = activeLevel === 3 ? { ...basketballState.blocker } : null;
+        const shotResult = simulateShot(angle, power, basketballState.pos.x, simBlocker);
+
+        let basketScored = false, framesAfterScore = 0, prevY = b.y;
+        let animBlocker  = activeLevel === 3 ? { ...basketballState.blocker } : null;
+
+        const frameDelay = speed === 'fast' ? 1 : 0; // normal uses rAF (60fps, fast)
+
+        for (let t = 0; t < 250; t++) {
+            prevY = b.y; b.x += b.vx; b.y += b.vy; b.vy += p.GRAVITY;
+            if (animBlocker) {
+                animBlocker.y += animBlocker.vy;
+                if (animBlocker.y < 150 || animBlocker.y > 250) animBlocker.vy *= -1;
+            }
+            drawCourt(player, basketballState.pos.x, animBlocker);
+            ctx.fillStyle = CONFIG.COLORS.BALL;
+            ctx.beginPath(); ctx.arc(b.x, b.y, p.BALL_SIZE, 0, 2 * Math.PI); ctx.fill();
+
+            if (!basketScored && prevY < p.HOOP.y && b.y >= p.HOOP.y && Math.abs(b.x - p.HOOP.x) < p.HOOP_R && b.vy > 0) basketScored = true;
+            if (basketScored) { framesAfterScore++; if (framesAfterScore > 8) break; }
+            if (shotResult.reason === 'blocked' && b.x > (animBlocker?.x || 0)) break;
+            if (!basketScored && (b.y > canvas.height || b.x > canvas.width)) break;
+
+            if (frameDelay > 0) await delay(frameDelay);
+            else                await new Promise(requestAnimationFrame);
         }
 
-        if(b.y>300||b.x>400)return{result:'miss',reason:'out of bounds',missPoint:{x:b.x,y:b.y}};}
-    return{result:'miss',reason:'timeout',missPoint:{x:b.x,y:b.y}};}
-    
-    // --- MODIFICATION 1: Corrected typo from p.BALL_SIDE to p.BALL_SIZE ---
-    async function animateShot(angle,power,player){const canvas=D.getElementById(`${player}-canvas`),ctx=canvas.getContext('2d'),p=CONFIG.PHYSICS;let b={x:basketballState.pos.x,y:300-15,vx:power*p.VEL_FACTOR*Math.cos(angle*Math.PI/180),vy:-power*p.VEL_FACTOR*Math.sin(angle*Math.PI/180)};let blocker=activeLevel===3?{...basketballState.blocker}:null;
-    const shotResult=simulateShot(angle,power,basketballState.pos.x,blocker?{...blocker}:null);
-    let basketScored=false,framesAfterScore=0;let prevY = b.y; for(let t=0;t<250;t++){prevY = b.y; b.x+=b.vx;b.y+=b.vy;b.vy+=p.GRAVITY;if(blocker){blocker.y+=blocker.vy;
-        if(blocker.y<150||blocker.y>250)blocker.vy*=-1;}
-    drawCourt(player,basketballState.pos.x,blocker);ctx.fillStyle=CONFIG.COLORS.BALL;ctx.beginPath();ctx.arc(b.x,b.y,p.BALL_SIZE,0,2*Math.PI);ctx.fill();
-    
-    if(!basketScored && prevY < p.HOOP.y && b.y >= p.HOOP.y && Math.abs(b.x - p.HOOP.x) < p.HOOP_R && b.vy > 0)basketScored=true;
+        if (player === 'ai' && animBlocker) {
+            basketballState.blocker.y  = animBlocker.y;
+            basketballState.blocker.vy = animBlocker.vy;
+        }
+        return shotResult;
+    }
 
-    if(basketScored){framesAfterScore++;if(framesAfterScore>8)break;}
-    if(shotResult.reason==='blocked'&&b.x>(blocker?.x||0))break;if(!basketScored&&(b.y>canvas.height||b.x>canvas.width))break;await delay(16);}
-    return shotResult;}
     </script>
 </body>
 </html>
